@@ -82,6 +82,16 @@ export class TakePicComponent implements OnInit {
     return this.modalService.open(content, { size: 'xl' }); // Abre el modal
   }
 
+  changeEgress(event: any) {
+    if (event.target.checked) {
+      this.persona = 'Egresado';
+    } else {
+      this.persona = 'Estudiante'; // O cualquier otro valor predeterminado.
+    }
+    this.response.type = this.persona;
+    this.getPicturPerson();
+  }
+
   fillForm(data:User){
     this.personIn = true;
     this.persona = data.type
@@ -98,8 +108,24 @@ export class TakePicComponent implements OnInit {
       rh: data.rh
     };
 
+    this.getPicturPerson();
+
+    //Guardamos o actualizamos la información en BD del sistema y no de SMA...
+    this.pictureService.getPersonCarnetizacion(this.response).subscribe(
+      (res: User) => {
+        if(res.success == "1")
+          this.response.rh = res.rh;       
+      },
+      (error) => {
+        console.error(error);
+        this.toastr.error('Error al consultar la información de carnetización. Intente nuevamente.');
+      }
+    );
+  }
+
+  getPicturPerson(){
     let baseUrl = this.pictureService.getURLBasePhoto();
-    let url = this.response.type == "Docente"?  baseUrl+"docentes/": this.response.type == "Funcionario"?baseUrl+"administrativos/" : baseUrl;        
+    let url = this.response.type == "Docente"?  baseUrl+"docentes/": this.response.type == "Funcionario"?baseUrl+"administrativos/" : this.response.type == "Egresado"?baseUrl+"egresados/" : baseUrl+"estudiantes/";
     url += this.response.document.trim()+".png?v="+Math.random();
 
     this.pictureService.validateURL(url).subscribe(
@@ -112,18 +138,6 @@ export class TakePicComponent implements OnInit {
           this.photoSrc = "assets/images/user_default.jpg";
         }
         this.pictureService.updatePhotoSrc(this.photoSrc); // Actualizar la URL en el servicio
-      }
-    );
-
-    //Guardamos o actualizamos la información en BD del sistema y no de SMA...
-    this.pictureService.getPersonCarnetizacion(this.response).subscribe(
-      (res: User) => {
-        if(res.success == "1")
-          this.response.rh = res.rh;       
-      },
-      (error) => {
-        console.error(error);
-        this.toastr.error('Error al consultar la información de carnetización. Intente nuevamente.');
       }
     );
   }

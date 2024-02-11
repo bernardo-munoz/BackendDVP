@@ -39,9 +39,9 @@ export class CameraComponent implements OnInit {
   
   startCamera() {
     this.isCameraOn = true;
-
-    // Solicitar acceso a la cámara
-    navigator.mediaDevices.getUserMedia({ video: true })
+  
+    // Solicitar acceso a la cámara con el dispositivo específico
+    navigator.mediaDevices.getUserMedia({ video: { deviceId: this.selectedVideoDevice.deviceId } })
       .then((stream) => {
         this.videoElement.nativeElement.srcObject = stream;
       })

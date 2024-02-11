@@ -54,6 +54,11 @@
                 <option>AB-</option>
               </select>
             </div>
+
+            <div class="form-check mb-3" *ngIf="(response.type == 'Estudiante' || response.type == 'Egresado') && response.state == 'Inactivo'">
+              <input type="checkbox" class="form-check-input" id="esEgresado" (change)="changeEgress($event)">
+              <label class="form-check-label" for="esEgresado">¿Es egresado?</label>
+            </div>
             
             <button class="btn btn-primary me-2" (click)="getPerson(carnetizacion.value.document)">Consultar</button>
             <button class="btn btn-success me-2" (click)="setImagePerson($event)">Guardar</button>

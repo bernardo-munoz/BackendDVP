@@ -5,8 +5,32 @@
         <div class="card-body">
           <h6 class="card-title">Reporte carnetización | UDS</h6>
           <p class="text-muted mb-3">Registros</p>
+
+          <div class="mb-3 col-md-3">
+            <label for="rh" class="form-label">Vinculación</label>
+            <select class="form-select" name="rh" id="rh" [(ngModel)]="type" (change)="setType($event)">
+              <option>Estudiante</option>
+              <option>Funcionario</option>
+              <option>Egresado</option>
+              <option>Docente</option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary me-2" (click)="getRegister()">Consultar</button>
   
           <div class="table-responsive">
+            <ngx-datatable
+              class="material"
+              [rows]="register"
+              [columns]="columns"
+              [columnMode]="'force'"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [rowHeight]="'auto'"
+            >
+            </ngx-datatable>
+
+          <!-- <div class="table-responsive">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -24,15 +48,25 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- <tr *ngFor="let modulo of modulos; let i = index">
-                  <td>{{ modulo.id_modulo }}</td>
-                  <td>{{ modulo.rol }}</td>
-                  <td>{{ modulo.modulo }}</td>
-                  <td><input type="checkbox" (change)="onCheckboxChange(modulo)" [(ngModel)]="modulo.habilitado"></td>
-                </tr> -->
+                <tr *ngFor="let person of register | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems: totalItems }">
+                  <td>{{ person.id_carnet }}</td>
+                  <td>{{ person.document }}</td>
+                  <td>{{ person.name }}</td>
+                  <td>{{ person.last_name }}</td>
+                  <td>{{ person.program }}</td>
+                  <td>{{ person.type }}</td>
+                  <td>{{ person.state }}</td>
+                  <td>{{ person.rh }}</td>
+                  <td>{{ person.addAt }}</td>
+                  <td>{{ person.updateAt }}</td>
+                  <td>{{ person.url }}</td>
+                </tr>
               </tbody>
             </table>
-          </div>
+            
+            <pagination-controls (pageChange)="handlePageChange($event)"></pagination-controls>
+
+          </div> -->
   
         </div>
       </div>

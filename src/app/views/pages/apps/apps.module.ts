@@ -47,6 +47,8 @@ import { MakedirComponent } from './makedir/makedir.component';
 import { UsersComponent } from './users/users.component';
 import { DetailUserComponent } from './users/detail-user/detail-user.component';
 import { ExportRegisterComponent } from './export-register/export-register.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 const routes: Routes = [
   {
@@ -147,6 +149,8 @@ const routes: Routes = [
     NgbNavModule,
     NgbCollapseModule,
     NgSelectModule,
+    NgxPaginationModule,
+    NgxDatatableModule,
     QuillModule.forRoot(), // ngx-quill
   ],
   providers: [
