@@ -1,3 +1,4 @@
+<app-loader></app-loader>
 
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -18,7 +19,7 @@
 
           <button class="btn btn-primary me-2" (click)="getRegister()">Consultar</button>
   
-          <div class="table-responsive">
+          <!-- <div class="table-responsive">
             <ngx-datatable
               class="material"
               [rows]="register"
@@ -28,46 +29,80 @@
               [footerHeight]="50"
               [rowHeight]="'auto'"
             >
-            </ngx-datatable>
+            </ngx-datatable> -->
 
-          <!-- <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Documento</th>
-                  <th>Nombre</th>
-                  <th>Apellido</th>
-                  <th>Programa</th>
-                  <th>Tipo</th>
-                  <th>Estado</th>
-                  <th>RH</th>
-                  <th>Registro</th>
-                  <th>Actualizado</th>
-                  <th>URL Foto</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let person of register | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems: totalItems }">
-                  <td>{{ person.id_carnet }}</td>
-                  <td>{{ person.document }}</td>
-                  <td>{{ person.name }}</td>
-                  <td>{{ person.last_name }}</td>
-                  <td>{{ person.program }}</td>
-                  <td>{{ person.type }}</td>
-                  <td>{{ person.state }}</td>
-                  <td>{{ person.rh }}</td>
-                  <td>{{ person.addAt }}</td>
-                  <td>{{ person.updateAt }}</td>
-                  <td>{{ person.url }}</td>
-                </tr>
-              </tbody>
-            </table>
-            
-            <pagination-controls (pageChange)="handlePageChange($event)"></pagination-controls>
-
-          </div> -->
-  
+            <button id="exportButton" style="
+              background-color: #28a745; /* Color verde */
+              color: #fff; /* Texto en blanco */
+              border: none;
+              padding: 10px 15px;
+              border-radius: 4px;
+              cursor: pointer;
+              font-size: 14px;
+            ">
+              <i class="fas fa-file-excel"></i>
+            </button>
+            <div class="row">
+              <div class="col-md-12 stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h6 class="card-title">Registros encontrados</h6>
+                    <div class="table-responsive">
+                      <table id="tablePictures" class="table table-responsive">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Documento</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Programa</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>RH</th>
+                            <th>Registro</th>
+                            <th>Actualizado</th>
+                            <th>URL Foto</th>
+                            <th>Ver Foto</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let person of register">
+                            <td>{{ person.id_carnet }}</td>
+                            <td>{{ person.document }}</td>
+                            <td>{{ person.name }}</td>
+                            <td>{{ person.last_name }}</td>
+                            <td>{{ person.program }}</td>
+                            <td>{{ person.type }}</td>
+                            <td>{{ person.state }}</td>
+                            <td>{{ person.rh }}</td>
+                            <td>{{ person.addAt }}</td>
+                            <td>{{ person.updateAt }}</td>
+                            <td>{{ person.url }}</td>
+                            <td><a target="_blank" href="{{ person.url }}"><i class="fa fa-eye"></i></a></td>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                          <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>  
         </div>
       </div>
     </div>

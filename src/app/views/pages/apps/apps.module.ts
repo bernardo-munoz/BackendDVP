@@ -49,6 +49,8 @@ import { DetailUserComponent } from './users/detail-user/detail-user.component';
 import { ExportRegisterComponent } from './export-register/export-register.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { RolesComponent } from './roles/roles.component';
+import { ListUserComponent } from './users/list-user/list-user.component';
 
 const routes: Routes = [
   {
@@ -132,12 +134,16 @@ const routes: Routes = [
         path: 'export-register',
         component: ExportRegisterComponent        
       },
+      {
+        path: 'roles',
+        component: RolesComponent        
+      },
     ]
   }
 ]
 
 @NgModule({
-  declarations: [EmailComponent, ChatComponent, CalendarComponent, AppsComponent, InboxComponent, ReadComponent, ComposeComponent, TakePicComponent, LicenseComponent, ModalUserComponent, CameraComponent, LoaderComponent, WorkingdayComponent, MakedirComponent, UsersComponent, DetailUserComponent, ExportRegisterComponent],
+  declarations: [EmailComponent, ChatComponent, CalendarComponent, AppsComponent, InboxComponent, ReadComponent, ComposeComponent, TakePicComponent, LicenseComponent, ModalUserComponent, CameraComponent, LoaderComponent, WorkingdayComponent, MakedirComponent, UsersComponent, DetailUserComponent, ExportRegisterComponent, RolesComponent, ListUserComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),

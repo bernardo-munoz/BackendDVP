@@ -18,22 +18,25 @@ export interface Users{
 export interface Roles{
     id_rol: string;
     rol: string;
+    state?: string;
 }
 
 export interface Modulos{
-    id_modulo: string;
-    rol: string;
-    modulo: string;
-    habilitado: boolean;
+    id_menu : string;
+    label : string;
+    is_item : string;
+    is_subitem : string;
 }
 
 export interface Permisos{
-    id : string;
+    id_permiso : string;
     documento : string;
-    id_rol : string;
     id_modulo : string;
-    asignar : string;
-    guardar : string;
-    actualizar : string;
-    eliminar : string;
+    habilitado : string;
+}
+
+export interface MenuRol{
+    id_menu : string;
+    id_rol : string;
+    state?: boolean;
 }

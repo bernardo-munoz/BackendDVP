@@ -4,8 +4,12 @@ import { DOCUMENT } from '@angular/common';
 import MetisMenu from 'metismenujs';
 
 import { MENU } from './menu';
-import { MenuItem } from './menu.model';
+import { MenuItem, MenuData } from './menu.model';
 import { Router, NavigationEnd } from '@angular/router';
+import { RequestResultPHP } from 'src/app/models/request-result';
+import { ToastrService } from 'ngx-toastr';
+import { SidebarService } from './services/sidebar.service';
+import { SESSION_LS_NAME, SESSION_TYPE_ROL } from 'src/app/models/consts';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,8 +22,27 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
   menuItems: MenuItem[] = [];
   @ViewChild('sidebarMenu') sidebarMenu: ElementRef;
+  rol: string = sessionStorage.getItem(SESSION_TYPE_ROL)?.toString() ?? "1";
 
-  constructor(@Inject(DOCUMENT) private document: Document, private renderer: Renderer2, router: Router) { 
+  constructor(
+    @Inject(DOCUMENT) private document: Document, 
+    private renderer: Renderer2, 
+    router: Router,
+    private sidebarService: SidebarService,
+    private toastr: ToastrService
+  ) { 
+    //Validamos session
+    const isLoggedin = sessionStorage.getItem(SESSION_LS_NAME);
+
+    if (isLoggedin !== 'true') {
+      localStorage.removeItem(SESSION_LS_NAME);
+      sessionStorage.removeItem(SESSION_LS_NAME);
+      sessionStorage.removeItem(SESSION_TYPE_ROL);
+
+      // Redirige a la página de inicio de sesión
+      router.navigate(['/auth/login']);
+    }
+
     router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
 
@@ -40,8 +63,9 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.menuItems = MENU;
 
+    this.menuItems = MENU;
+    this.getMenuItem();
     /**
      * Sidebar-folded on desktop (min-width:992px and max-width: 1199px)
      */
@@ -52,6 +76,54 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     this.iconSidebar(desktopMedium);
   }
 
+  getMenuItem() {
+    //Consultamos los menus asociados al usuario
+    this.sidebarService.getMenuByRol(this.rol).subscribe(
+      (res: RequestResultPHP<MenuData>) => {
+  
+        if (res.success == "1") {
+          const menuData: MenuData[] = Object.values(res.result);
+
+          var admin = this.rol === "1";
+          //Si no eres admin se filtran los menus
+          if(this.rol.toString() != "1"){
+            // Obtener las etiquetas permitidas
+            const allowedMenuLabels = menuData.map(item => item.label).filter(label => label !== undefined);
+    
+            // Filtrar el menú basado en las etiquetas permitidas, excluyendo ciertos elementos
+            this.menuItems = this.filterMenuItems(MENU, allowedMenuLabels, ['Menu', 'Inicio', 'Opciones']);
+          }
+        }
+        else{
+          this.menuItems = [];
+        }
+      },
+      (error: any) => {
+        console.error(error);
+        this.toastr.error('Error al consultar la información de carnetización. Intente nuevamente.');
+      }
+    );
+  }
+  
+  // Función para filtrar los elementos del menú basados en etiquetas permitidas, excluyendo ciertos elementos
+  filterMenuItems(menu: MenuItem[], allowedLabels: (string | undefined)[], exceptions: string[]): MenuItem[] {
+    return menu.filter(item => {
+      // Verificar si el elemento es una excepción, si lo es, mantenerlo
+      if (item.label !== undefined && exceptions.includes(item.label)) {
+        return true;
+      }
+  
+      // Si el elemento tiene subelementos, aplicar recursividad
+      if (item.subItems && item.subItems.length > 0) {
+        item.subItems = this.filterMenuItems(item.subItems, allowedLabels, exceptions);
+        return item.subItems.length > 0;
+      }
+  
+      // Si el label está permitido (y no es undefined), mantener el elemento
+      return item.label !== undefined && allowedLabels.includes(item.label);
+    });
+  }
+  
   ngAfterViewInit() {
     // activate menu item
     new MetisMenu(this.sidebarMenu.nativeElement);

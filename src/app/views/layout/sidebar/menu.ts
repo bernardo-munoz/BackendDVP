@@ -23,19 +23,51 @@ export const MENU: MenuItem[] = [
         link: '/apps/picture',
       },
       {
-        label: 'Crear Jornadas',
-        link: '/apps/workingday'
-      },
-      {
         label: 'Exportar Registros',
         link: '/apps/export-register'
       },
-      {
-        label: 'Crear carpetas',
-        link: '/apps/makedir'
-      },
+      // {
+      //   label: 'Crear Jornadas',
+      //   link: '/apps/workingday'
+      // },
+      // {
+      //   label: 'Crear carpetas',
+      //   link: '/apps/makedir'
+      // },
     ]
+  },  
+  {
+    label: 'Usuarios',
+    icon: 'users',
+    link: '/apps/users'
+  },  
+  {
+    label: 'Roles',
+    icon: 'user-x',
+    link: '/apps/roles'
   },
+  // {
+  //   label: 'Carnetización',
+  //   icon: 'camera',
+  //   subItems: [
+  //     {
+  //       label: 'Tomar foto',
+  //       link: '/apps/picture',
+  //     },
+  //     {
+  //       label: 'Exportar Registros',
+  //       link: '/apps/export-register'
+  //     },
+  //     // {
+  //     //   label: 'Crear Jornadas',
+  //     //   link: '/apps/workingday'
+  //     // },
+  //     // {
+  //     //   label: 'Crear carpetas',
+  //     //   link: '/apps/makedir'
+  //     // },
+  //   ]
+  // },
   // {
   //   label: 'Servicios Informaticos',
   //   icon: 'airplay',
@@ -54,11 +86,6 @@ export const MENU: MenuItem[] = [
   //     },
   //   ]
   // },
-  {
-    label: 'Usuarios',
-    icon: 'users',
-    link: '/apps/users'
-  },
   // {
   //   label: 'Envío Mensajes',
   //   icon: 'message-square',

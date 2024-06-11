@@ -11,18 +11,15 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Rol</th>
-                  <th>Modulo</th>
-                  <th>Habilitar</th>
+                  <th>Menu</th>
+                  <th>Estado</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let modulo of modulos; let i = index">
-                  <td>{{ modulo.id_modulo }}</td>
-                  <td>{{ modulo.rol }}</td>
-                  <td>{{ modulo.modulo }}</td>
-                  <td><input type="checkbox" (change)="onCheckboxChange(modulo)" [(ngModel)]="modulo.habilitado"></td>
-                  <!-- Agrega otras celdas según tu estructura de datos -->
+                <tr *ngFor="let item of menu; let i = index">
+                  <td>{{ item.id_menu }}</td>
+                  <td>{{ item.is_parent == "1" ? 'Menu ' + item.label : item.label_item_parent != "" ? item.label_item_parent + " > " + item.label : item.label}}</td>
+                  <td><input class="form-check-input" type="checkbox" checked disabled></td>
                 </tr>
               </tbody>
             </table>
@@ -31,4 +28,4 @@
         </div>
       </div>
     </div>
-  </div>
+</div>

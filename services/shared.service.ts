@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
+import { LoginData } from 'src/app/views/pages/auth/model/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class SharedService {
   public errorNotification: BehaviorSubject<{ message: string | string[], showPopUp: boolean }> = new BehaviorSubject<{ message: string | string[], showPopUp: boolean }>({ message: '', showPopUp: false });
   public warningNotification: BehaviorSubject<{ message: string | string[], showPopUp: boolean }> = new BehaviorSubject<{ message: string | string[], showPopUp: boolean }>({ message: '', showPopUp: false });
   public infoNotification: BehaviorSubject<{ message: string | string[], showPopUp: boolean }> = new BehaviorSubject<{ message: string | string[], showPopUp: boolean }>({ message: '', showPopUp: false });
+  private dataUser: BehaviorSubject<LoginData | null> = new BehaviorSubject<LoginData | null>(null);
 
   constructor() { }
 
@@ -65,5 +67,13 @@ export class SharedService {
       }
       return '';
     }
+  }
+
+  setDataUser(user: LoginData) {
+    this.dataUser.next(user);
+  }
+
+  getDataUser(): Observable<LoginData | null> {
+    return this.dataUser.asObservable();
   }
 }

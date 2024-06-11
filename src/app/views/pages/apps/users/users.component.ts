@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Permisos, Roles, Users } from './model/user';
 import { UserService } from './services/user.service';
 import { RequestResultPHP } from '../../../../models/request-result';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
   templateUrl: './users.component.html',
@@ -10,6 +11,7 @@ import { RequestResultPHP } from '../../../../models/request-result';
 })
 export class UsersComponent implements OnInit {
 
+  @ViewChild('selectRol') selectRol: NgSelectComponent;
   public userCreated: boolean = false;
   selectedRole: string;
   selectedState: string;
@@ -36,14 +38,24 @@ export class UsersComponent implements OnInit {
   constructor(
     private userService: UserService,
     private toastr: ToastrService
-  ) { this.getRoles(); }
+  ) { this.getRoles();
+  
+    this.userService.getUserSelectedEdit().subscribe((documento: string | null) => {
+
+      if(documento){
+        this.getUser(documento);
+      }
+      
+    });
+  }
 
   ngOnInit(): void {
   }
 
   cleanForm(){
 
-    this.selectedRole = this.roles[0].id_rol;
+    // this.selectedRole = this.roles[0].id_rol;
+    this.selectRol.clearModel();
     this.selectedState = 'Activo';
     this.userCreated = false;
     this.users = {
@@ -89,13 +101,20 @@ export class UsersComponent implements OnInit {
             success: data.success,
             message: data.message
           };
+
+          const selectedRole = this.roles.find(role => role.id_rol === String(data.rol));
           
-          // Buscar el objeto de rol correspondiente en this.roles
-          this.selectedRole =  data.rol;
-          this.selectedState = data.is_active == "1" ? "Activo" : "Inactivo";
-          //Seteamos el documento del usuario buscado
-          this.userService.setUserSelected(this.users.documento);
-          this.userCreated = true;
+          if (selectedRole) {
+            this.selectedRole = selectedRole.rol;
+            this.selectRol.writeValue(selectedRole);
+            
+            this.selectedState = data.is_active == "1" ? "Activo" : "Inactivo";
+            //Seteamos el documento del usuario buscado
+            this.userService.setUserSelected(this.users.documento);
+            this.userService.setRolUserSelected(selectedRole.id_rol);
+            this.userCreated = true;
+          }
+          
         }
         else{
           this.toastr.error(data.message);
@@ -110,18 +129,7 @@ export class UsersComponent implements OnInit {
 
       if(data.success == "1"){
         this.toastr.success(data.message);
-        this.roles =[
-          {
-            id_rol: "0",
-            rol: "Selecciona un rol"
-          }
-        ]
         this.roles = this.roles.concat(Object.values(data.result));
-
-        // Establecer el primer elemento como la opción predeterminada
-        if (this.roles.length > 0) {
-          this.selectedRole = this.roles[0].id_rol;
-        }
       }
       else{
         this.toastr.error(data.message);
@@ -131,12 +139,18 @@ export class UsersComponent implements OnInit {
 
   setUser(e:Event){
     e.preventDefault();
-       this.users.rol = this.selectedRole;
-       this.users.is_active = this.selectedState;
+    const selectedRole = this.roles.find(role => role.rol === this.selectedRole);
+    if(selectedRole){
+      this.users.rol = selectedRole?.id_rol;
+      this.users.is_active = this.selectedState;
       this.userService.setUser(this.users).subscribe(
         (response: Users) => {
-          if(response.success == "1" || response.success == "2")
+          if(response.success == "1" || response.success == "2"){
+            // this.getUser(this.users.documento);
+            
+            this.cleanForm();
             this.toastr.success(response.message);
+          }
           else
             this.toastr.warning(response.message);
           
@@ -146,8 +160,9 @@ export class UsersComponent implements OnInit {
           this.toastr.error('Error al guardar la información. Intente nuevamente.');
         }
       );
-    
-    return false;
+    }
+    else
+      this.toastr.warning("No se pudo encontrar el rol a asignar.");
   }
 
   validateUser(user: Users){

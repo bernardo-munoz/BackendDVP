@@ -12,3 +12,21 @@ export interface LoginData{
     success: string;
     telefono: string;
 }
+
+export interface RequestResult<T> {
+  encontrados: string;
+  message: string;
+  success: string;
+  result: {};
+}
+
+export interface UserData {
+  apellidos: string;
+  documento: string;
+  email: string;
+  id: string;
+  is_active: string;
+  nombres: string;
+  rol: string;
+  telefono: string;
+}

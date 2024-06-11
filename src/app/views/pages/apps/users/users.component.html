@@ -53,10 +53,18 @@
             </div>
             <div class="mb-3">
                 <label for="rol" class="form-label">Rol</label>
-                <select class="form-select" name="rol" id="rol" [(ngModel)]="selectedRole">
-                  <!-- Itera sobre los roles disponibles y crea opciones -->
+                <ng-select [items]="roles"
+                  bindLabel="rol"
+                  bindValue="rol"
+                  placeholder="Selecciona un rol"
+                  name="selectedRol"
+                  [(ngModel)]="selectedRole"
+                  [clearable]="true"
+                  #selectRol>
+                </ng-select>
+                <!-- <select class="form-select" name="rol" id="rol" [(ngModel)]="selectedRole">
                   <option *ngFor="let rol of roles" [value]="rol.id_rol">{{ rol.rol }}</option>
-                </select>
+                </select> -->
             </div>
               
             
@@ -73,3 +81,7 @@
       <app-detail-user style="width: 100%;"></app-detail-user>      
     </div>
   </div>
+
+  <div class="row">
+    <app-list-user style="width: 100%;"></app-list-user>
+  </div>  
