@@ -1,9 +1,11 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of, retry, throwError } from 'rxjs';
 import { ConfigService } from 'services/config.service';
 import { SharedService } from 'services/shared.service';
 import { RequestResultSMA, User } from '../model/person';
+import { Router } from '@angular/router';
+import { SESSION_TOKEN } from 'src/app/models/consts';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +17,9 @@ export class PictureService {
   private urlBase: string;
   private photoSrcSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   public photoSrc$: Observable<string> = this.photoSrcSubject.asObservable();
-  
+
   constructor(
+    private router: Router,
     private http: HttpClient,
     private configService: ConfigService,
     private sharedService: SharedService
@@ -26,31 +29,40 @@ export class PictureService {
     this.urlBase = this.configService.config.urlPhoto;
    }
 
-  
+
   private handleError(error:any) {
     this.sharedService.showLoader(false);
     console.error(error);
     this.sharedService.error(error);
     return throwError(error);
   }
-  
+
   getPersonSMA(document: string) {
     this.sharedService.showLoader(true);
-  
+
     const body = new URLSearchParams();
     body.set('document', document);
 
-    const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/x-www-form-urlencoded');
 
     return this.http
-      .post<RequestResultSMA>(
-        `${this.configService?.config?.urlApi}sma_services.php`,
-        body.toString(), // Envía los datos en el formato application/x-www-form-urlencoded
-        { headers: headers }
-      )
+      .post<RequestResultSMA>(`${this.configService?.config?.urlApi}sma_services.php`, body.toString(), { headers: headers })
       .pipe(
         retry(0),
-        catchError(this.handleError),
+         catchError((error: HttpErrorResponse) => {
+          let errorMessage = '';
+          if (error.status === 401) {
+            errorMessage = 'Token expirado o no válido. Por favor, inicia sesión de nuevo.';
+
+            this.router.navigate(['/auth/login']);
+          } else {
+            errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+          }
+          this.sharedService.showLoader(false);
+          this.sharedService.error(errorMessage);
+          return throwError(() => new Error(errorMessage));
+        }),
         map((response) => {
           this.sharedService.showLoader(false);
           return response;
@@ -60,13 +72,18 @@ export class PictureService {
 
   setImagePerson(data: User, imagen:string) {
     this.sharedService.showLoader(true);
-  
+
+    // Obtener el token de localStorage o sessionStorage
+    const token = sessionStorage.getItem(SESSION_TOKEN);
+
     const body = new URLSearchParams();
     body.set('document', data.document);
     body.set('type', data.type);
     body.set('imagen', imagen);
 
-    const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+    const headers = new HttpHeaders()
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .set('Authorization',`Bearer ${token}`);
 
     return this.http
       .post<User>(
@@ -76,7 +93,19 @@ export class PictureService {
       )
       .pipe(
         retry(0),
-        catchError(this.handleError),
+         catchError((error: HttpErrorResponse) => {
+          let errorMessage = '';
+          if (error.status === 401) {
+            errorMessage = 'Token expirado o no válido. Por favor, inicia sesión de nuevo.';
+
+            this.router.navigate(['/auth/login']);
+          } else {
+            errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+          }
+          this.sharedService.showLoader(false);
+          this.sharedService.error(errorMessage);
+          return throwError(() => new Error(errorMessage));
+        }),
         map((response) => {
           this.sharedService.showLoader(false);
           return response;
@@ -86,7 +115,10 @@ export class PictureService {
 
   setCarnet(data: User) {
     this.sharedService.showLoader(true);
-  
+
+    // Obtener el token de localStorage o sessionStorage
+    const token = sessionStorage.getItem(SESSION_TOKEN);
+
     const body = new URLSearchParams();
     body.set('document', data.document);
     body.set('name', data.name);
@@ -96,17 +128,30 @@ export class PictureService {
     body.set('state', data.state);
     body.set('rh', data.rh);
 
-    const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+    const headers = new HttpHeaders()
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .set('Authorization',`Bearer ${token}`);
 
     return this.http
-      .post<User>(
-        `${this.configService?.config?.urlApi}setCarnet.php`,
+      .post<User>(`${this.configService?.config?.urlApi}setCarnet.php`,
         body.toString(), // Envía los datos en el formato application/x-www-form-urlencoded
         { headers: headers }
       )
       .pipe(
         retry(0),
-        catchError(this.handleError),
+         catchError((error: HttpErrorResponse) => {
+          let errorMessage = '';
+          if (error.status === 401) {
+            errorMessage = 'Token expirado o no válido. Por favor, inicia sesión de nuevo.';
+
+            this.router.navigate(['/auth/login']);
+          } else {
+            errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+          }
+          this.sharedService.showLoader(false);
+          this.sharedService.error(errorMessage);
+          return throwError(() => new Error(errorMessage));
+        }),
         map((response) => {
           this.sharedService.showLoader(false);
           return response;
@@ -144,11 +189,16 @@ export class PictureService {
 
   getPersonCarnetizacion(data: User) {
     this.sharedService.showLoader(true);
-  
+
+    // Obtener el token de localStorage o sessionStorage
+    const token = sessionStorage.getItem(SESSION_TOKEN);
+
     const body = new URLSearchParams();
     body.set('document', data.document);
 
-    const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+    const headers = new HttpHeaders()
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .set('Authorization',`Bearer ${token}`);
 
     return this.http
       .post<User>(
@@ -158,7 +208,19 @@ export class PictureService {
       )
       .pipe(
         retry(0),
-        catchError(this.handleError),
+         catchError((error: HttpErrorResponse) => {
+          let errorMessage = '';
+          if (error.status === 401) {
+            errorMessage = 'Token expirado o no válido. Por favor, inicia sesión de nuevo.';
+
+            this.router.navigate(['/auth/login']);
+          } else {
+            errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+          }
+          this.sharedService.showLoader(false);
+          this.sharedService.error(errorMessage);
+          return throwError(() => new Error(errorMessage));
+        }),
         map((response) => {
           this.sharedService.showLoader(false);
           return response;

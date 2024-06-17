@@ -49,7 +49,7 @@ export class TakePicComponent implements OnInit {
   getPerson(document: string) {
 
     if(document == undefined)
-      this.toastr.warning("El numero de documento es obligatorio.");    
+      this.toastr.warning("El numero de documento es obligatorio.");
     else
       this.pictureService.getPersonSMA(document)
       .subscribe((rest:RequestResultSMA) => {
@@ -78,7 +78,7 @@ export class TakePicComponent implements OnInit {
   }
 
   openModalUser(content: any) {
-    
+
     return this.modalService.open(content, { size: 'xl' }); // Abre el modal
   }
 
@@ -111,16 +111,16 @@ export class TakePicComponent implements OnInit {
     this.getPicturPerson();
 
     //Guardamos o actualizamos la información en BD del sistema y no de SMA...
-    this.pictureService.getPersonCarnetizacion(this.response).subscribe(
-      (res: User) => {
-        if(res.success == "1")
-          this.response.rh = res.rh;       
-      },
-      (error) => {
-        console.error(error);
-        this.toastr.error('Error al consultar la información de carnetización. Intente nuevamente.');
-      }
-    );
+    // this.pictureService.getPersonCarnetizacion(this.response).subscribe(
+    //   (res: User) => {
+    //     if(res.success == "1")
+    //       this.response.rh = res.rh;
+    //   },
+    //   (error) => {
+    //     console.error(error);
+    //     this.toastr.error('Error al consultar la información de carnetización. Intente nuevamente.');
+    //   }
+    // );
   }
 
   getPicturPerson(){
@@ -163,19 +163,19 @@ export class TakePicComponent implements OnInit {
     this.photoSrc;
     if(this.response.document == "")
       return this.toastr.warning("El numero de documento es obligatorio.");
-    
+
     if(this.response.rh == "" || this.response.rh == "Selecciona un tipo de sangre")
       return this.toastr.warning("El tipo de sangre RH es obligatorio.");
 
       if (this.photoSrc) {
-       
+
         this.pictureService.setImagePerson(this.response, this.photoSrc).subscribe(
           (response: User) => {
             if(response.success == "1")
               this.toastr.success('La foto se guardó con éxito.');
             else
               this.toastr.warning('La foto no se guardó con éxito.');
-            
+
           },
           (error) => {
             console.error(error);
@@ -199,7 +199,7 @@ export class TakePicComponent implements OnInit {
       } else {
         this.toastr.warning('Debe tomar una foto antes de guardar.');
       }
-    
+
     return false;
   }
 

@@ -1,17 +1,16 @@
 export interface Users{
-    id: string;
-    documento: string;
-    nombres: string;
-    apellidos: string;
-    telefono: string;
-    email: string;
-    password: string;
-    confirm_password: string;
-    rol: string;
-    is_active: string;
-    created_at: string;
-    success: string;
-    message: string;
+  id_user: string;
+  document: string;
+  name: string;
+  lastname: string;
+  phone: string;
+  email: string;
+  state: string;
+  id_rol: string;
+  addAt: string;
+  rol: string;
+  password?:string;
+  confirm_password?:string;
 
 }
 
@@ -19,6 +18,11 @@ export interface Roles{
     id_rol: string;
     rol: string;
     state?: string;
+}
+
+export interface States{
+  id_state: string;
+  state?: string;
 }
 
 export interface Modulos{

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpParams } from '@angular/common/http';
-import { LoginData } from 'src/app/views/pages/auth/model/auth';
+import { BehaviorSubject, Observable, catchError, map, retry, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { RequestResult, Users } from 'src/app/views/pages/auth/model/auth';
+import { ConfigService } from './config.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -13,28 +15,35 @@ export class SharedService {
   public errorNotification: BehaviorSubject<{ message: string | string[], showPopUp: boolean }> = new BehaviorSubject<{ message: string | string[], showPopUp: boolean }>({ message: '', showPopUp: false });
   public warningNotification: BehaviorSubject<{ message: string | string[], showPopUp: boolean }> = new BehaviorSubject<{ message: string | string[], showPopUp: boolean }>({ message: '', showPopUp: false });
   public infoNotification: BehaviorSubject<{ message: string | string[], showPopUp: boolean }> = new BehaviorSubject<{ message: string | string[], showPopUp: boolean }>({ message: '', showPopUp: false });
-  private dataUser: BehaviorSubject<LoginData | null> = new BehaviorSubject<LoginData | null>(null);
 
-  constructor() { }
+  constructor(
+    private toastr: ToastrService,
+    private http: HttpClient,
+    private configService: ConfigService
+  ) { }
 
   showLoader(valor: boolean) {
     return this.loader.next(valor);
   }
 
-  success(message: string | string[], showPopUp: boolean = false) {
-    this.successNotification.next({ message, showPopUp });
+  success(message: string | string[]) {
+    // this.successNotification.next({ message, showPopUp });
+      this.toastr.success(Array.isArray(message) ? message.join('<br/>') : message);
   }
 
-  error(message: string | string[], showPopUp: boolean = false) {
-    this.errorNotification.next({ message, showPopUp });
+  error(message: string | string[]) {
+    // this.errorNotification.next({ message, showPopUp });
+      this.toastr.error(Array.isArray(message) ? message.join('<br/>') : message);
   }
 
-  warning(message: string | string[], showPopUp: boolean = false) {
-    this.warningNotification.next({ message, showPopUp });
+  warning(message: string | string[]) {
+    // this.warningNotification.next({ message, showPopUp });
+      this.toastr.warning(Array.isArray(message) ? message.join('<br/>') : message);
   }
 
-  info(message: string | string[], showPopUp: boolean = false) {
-    this.infoNotification.next({ message, showPopUp });
+  info(message: string | string[]) {
+    // this.infoNotification.next({ message, showPopUp });
+      this.toastr.info(Array.isArray(message) ? message.join('<br/>') : message);
   }
 
   createHttpParams(params: any): HttpParams {
@@ -69,11 +78,33 @@ export class SharedService {
     }
   }
 
-  setDataUser(user: LoginData) {
-    this.dataUser.next(user);
+  getDataUser(id_user: string): Observable<RequestResult<Users>> {
+    this.showLoader(true);
+
+    const body = new URLSearchParams();
+    body.set('id_user', id_user ?? "");
+
+    const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+
+    return this.http
+      .post<RequestResult<Users>>(
+        `${this.configService?.config?.urlApi}getUserByID.php`,
+        body.toString(), // Envía los datos en el formato application/x-www-form-urlencoded
+        { headers: headers }
+      )
+      .pipe(
+        retry(0),
+        catchError(this.handleError),
+        map((response) => {
+          this.showLoader(false);
+          return response;
+        })
+      );
   }
 
-  getDataUser(): Observable<LoginData | null> {
-    return this.dataUser.asObservable();
+  private handleError(error: any): Observable<never> {
+    this.showLoader(false);
+    console.error('Error en la solicitud:', error);
+    return throwError('Algo salió mal, por favor inténtelo de nuevo más tarde.');
   }
 }

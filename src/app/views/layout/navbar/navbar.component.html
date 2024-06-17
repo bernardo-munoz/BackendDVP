@@ -24,7 +24,7 @@
               <div class="flex-grow-1 me-2">
                 <p>New Order Recieved</p>
                 <p class="tx-12 text-muted">30 min ago</p>
-              </div>	
+              </div>
             </a>
             <a href="" (click)="false" class="dropdown-item d-flex align-items-center py-2">
               <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
@@ -33,7 +33,7 @@
               <div class="flex-grow-1 me-2">
                 <p>Server Limit Reached!</p>
                 <p class="tx-12 text-muted">1 hrs ago</p>
-              </div>	
+              </div>
             </a>
             <a href="" (click)="false" class="dropdown-item d-flex align-items-center py-2">
               <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
@@ -42,7 +42,7 @@
               <div class="flex-grow-1 me-2">
                 <p>New customer registered</p>
                 <p class="tx-12 text-muted">2 sec ago</p>
-              </div>	
+              </div>
             </a>
             <a href="" (click)="false" class="dropdown-item d-flex align-items-center py-2">
               <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
@@ -51,7 +51,7 @@
               <div class="flex-grow-1 me-2">
                 <p>Apps are ready for update</p>
                 <p class="tx-12 text-muted">5 hrs ago</p>
-              </div>	
+              </div>
             </a>
             <a href="" (click)="false" class="dropdown-item d-flex align-items-center py-2">
               <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
@@ -60,7 +60,7 @@
               <div class="flex-grow-1 me-2">
                 <p>Download completed</p>
                 <p class="tx-12 text-muted">6 hrs ago</p>
-              </div>	
+              </div>
             </a>
           </div>
           <div class="px-3 py-2 d-flex align-items-center justify-content-center border-top">
@@ -70,15 +70,15 @@
       </li> -->
       <li class="nav-item nav-profile" ngbDropdown>
         <a class="nav-link" ngbDropdownToggle id="profileDropdown">
-          <img class="wd-45 ht-30 rounded-circle" src="../../../../assets/images/user_default.jpg" alt="profile">
+          <img class="wd-45 ht-30 rounded-circle" src="../../../../uds/assets/images/user_default.jpg" alt="profile">
         </a>
         <div ngbDropdownMenu class="px-0" aria-labelledby="profileDropdown">
           <div class="d-flex flex-column align-items-center border-bottom px-5 py-3">
             <div class="mb-3">
-              <img class="wd-120 ht-80 rounded-circle" src="../../../../assets/images/user_default.jpg" alt="">
+              <img class="wd-120 ht-80 rounded-circle" src="../../../../uds/assets/images/user_default.jpg" alt="">
             </div>
             <div class="text-center">
-              <p class="tx-16 fw-bolder">{{ dataUser.nombres + " " + dataUser.apellidos }}</p>
+              <p class="tx-16 fw-bolder">{{ dataUser.name + " " + dataUser.lastname }}</p>
               <p class="tx-12 text-muted">{{ dataUser.email }}</p>
             </div>
           </div>

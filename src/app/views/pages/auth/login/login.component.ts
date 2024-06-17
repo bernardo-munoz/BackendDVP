@@ -1,10 +1,11 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LoginService } from '../services/login.service';
-import { LoginData } from '../model/auth';
 import { ToastrService } from 'ngx-toastr';
-import { SESSION_LS_NAME, SESSION_TYPE_ROL } from 'src/app/models/consts';
-import { SharedService } from '../../../../../../services/shared.service';
+import { RequestResult, Users } from '../model/auth';
+import { SESSION_ID_ROL, SESSION_ID_USER, SESSION_LS_NAME, SESSION_TOKEN, SESSION_TYPE_ROL } from 'src/app/models/consts';
+
+
 
 @Component({
   selector: 'app-login',
@@ -24,37 +25,38 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private loginService: LoginService,
-    private toastr: ToastrService,
-    private sharedService: SharedService
+    private toastr: ToastrService
     ) {}
 
   ngOnInit(): void {
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
+    localStorage.removeItem(SESSION_LS_NAME);
+    sessionStorage.removeItem(SESSION_LS_NAME);
+    sessionStorage.removeItem(SESSION_TYPE_ROL);
+    sessionStorage.removeItem(SESSION_ID_USER);
+
   }
 
   onLoggedin(e: Event) {
     e.preventDefault();
-    let documento = this.documentNumber.nativeElement.value;
-    let pass = this.password.nativeElement.value;
+    let document = this.documentNumber.nativeElement.value;
+    let password = this.password.nativeElement.value;
 
-    this.loginService.setLogin(documento, pass)
-    .subscribe((rest:LoginData) => {
+    this.loginService.setLogin(document, password).subscribe((response: RequestResult<Users> ) => {
 
-      if(rest.success == "1"){
-        this.toastr.success("Bienvenido " + rest.nombres + " " + rest.apellidos);
+      if(response.success == "1" && this.loginService.verifyToken(response.token)){
+
+        const dataUser = this.loginService.currentUser;
+        this.toastr.success("Bienvenido " + dataUser.data.name + " " + dataUser.data.lastname);
         sessionStorage.setItem(SESSION_LS_NAME, 'true'); // Cambiado de localStorage a sessionStorage
-        sessionStorage.setItem(SESSION_TYPE_ROL, rest.rol);
-        if (sessionStorage.getItem(SESSION_LS_NAME)) {
+        sessionStorage.setItem(SESSION_ID_ROL, dataUser.data.id_user);
 
-          this.sharedService.setDataUser(rest);
-
-
-          this.router.navigate([this.returnUrl]);
-        }
+        this.router.navigate([this.returnUrl]);
       }
       else{
-        this.toastr.error(rest.message);
+        this.toastr.error(response.message);
       }
     });
   }

@@ -19,7 +19,7 @@ import { EmailComponent } from './email/email.component';
 import { InboxComponent } from './email/inbox/inbox.component';
 import { ReadComponent } from './email/read/read.component';
 import { ComposeComponent } from './email/compose/compose.component';
-import { TakePicComponent } from './picture/take-pic.component';
+import { TakePicComponent } from './carnetizacion/picture/take-pic.component';
 import { LicenseComponent } from './license/license.component';
 
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
@@ -39,17 +39,17 @@ FullCalendarModule.registerPlugins([
 
 // ngx-quill
 import { QuillModule } from 'ngx-quill';
-import { ModalUserComponent } from './picture/modal-user/modal-user.component';
-import { CameraComponent } from './picture/camera/camera.component';
+import { ModalUserComponent } from './carnetizacion/picture/modal-user/modal-user.component';
+import { CameraComponent } from './carnetizacion/picture/camera/camera.component';
 import { LoaderComponent } from '../../layout/loader/loader.component';
 import { WorkingdayComponent } from './workingday/workingday.component';
-import { MakedirComponent } from './makedir/makedir.component';
+import { MakedirComponent } from './carnetizacion/makedir/makedir.component';
 import { UsersComponent } from './users/users.component';
 import { DetailUserComponent } from './users/detail-user/detail-user.component';
-import { ExportRegisterComponent } from './export-register/export-register.component';
+import { ExportRegisterComponent } from './carnetizacion/export-register/export-register.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { RolesComponent } from './roles/roles.component';
+import { RolesComponent } from './users/roles/roles.component';
 import { ListUserComponent } from './users/list-user/list-user.component';
 
 const routes: Routes = [
@@ -115,28 +115,28 @@ const routes: Routes = [
       {
         path: 'picture',
         component: TakePicComponent
-        
+
       },
       {
         path: 'workingday',
         component: WorkingdayComponent
-        
+
       },
       {
         path: 'makedir',
-        component: MakedirComponent        
+        component: MakedirComponent
       },
       {
         path: 'users',
-        component: UsersComponent        
+        component: UsersComponent
       },
       {
         path: 'export-register',
-        component: ExportRegisterComponent        
+        component: ExportRegisterComponent
       },
       {
         path: 'roles',
-        component: RolesComponent        
+        component: RolesComponent
       },
     ]
   }

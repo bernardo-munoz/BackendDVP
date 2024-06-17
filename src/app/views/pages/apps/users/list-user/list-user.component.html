@@ -15,43 +15,40 @@
                     <i class="fas fa-file-excel"></i>
                 </button>
                 <div class="table-responsive">
-                    <table id="tableUsers" class="table table-responsive">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Documento</th>
-                                <th>Nombres</th>
-                                <th>Apellidos</th>
-                                <th>Rol</th>
-                                <th>Estado</th>
-                                <th>Ver/Editar</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let user of users; let i = index">
-                                <td>{{ user.id }}</td>
-                                <td>{{ user.documento }}</td>
-                                <td>{{ user.nombres }}</td>
-                                <td>{{ user.apellidos }}</td>
-                                <td>{{ user.rol }}</td>
-                                <td>{{ user.is_active == "1" ? "Activo" : "Inactivo" }}</td>
-                                <td><i style="cursor: pointer;" class="fa fa-eye" (click)="getUser(user)"></i></td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </tfoot>
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="searchText" (ngModelChange)="onSearchTextChange()">
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Documento</th>
+                          <th>Nombres</th>
+                          <th>Apellidos</th>
+                          <th>Rol</th>
+                          <th>Estado</th>
+                          <th>Ver/Editar</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let user of filteredUsers | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }; let i = index">
+                          <td>{{ user.id_user }}</td>
+                          <td>{{ user.document }}</td>
+                          <td>{{ user.name }}</td>
+                          <td>{{ user.lastname }}</td>
+                          <td>{{ user.rol }}</td>
+                          <td>{{ user.state == '1' ? 'Activo' : 'Inactivo' }}</td>
+                          <td><i style="cursor: pointer;" class="fa fa-eye" (click)="getUser(user.id_user)"></i></td>
+                        </tr>
+                      </tbody>
                     </table>
-                </div>
-            </div>
+                  </div>
+                  <pagination-controls (pageChange)="pageChanged($event)" [maxSize]="5" [directionLinks]="true" [autoHide]="true"></pagination-controls>
+              </div>
+
         </div>
     </div>
 </div>

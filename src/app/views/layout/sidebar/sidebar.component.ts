@@ -9,7 +9,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { RequestResultPHP } from 'src/app/models/request-result';
 import { ToastrService } from 'ngx-toastr';
 import { SidebarService } from './services/sidebar.service';
-import { SESSION_LS_NAME, SESSION_TYPE_ROL } from 'src/app/models/consts';
+import { SESSION_ID_ROL, SESSION_LS_NAME, SESSION_TYPE_ROL } from 'src/app/models/consts';
 
 @Component({
   selector: 'app-sidebar',
@@ -22,22 +22,21 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
   menuItems: MenuItem[] = [];
   @ViewChild('sidebarMenu') sidebarMenu: ElementRef;
-  rol: string = sessionStorage.getItem(SESSION_TYPE_ROL)?.toString() ?? "1";
+  rol: string = sessionStorage.getItem(SESSION_ID_ROL) ?? "0";
 
   constructor(
-    @Inject(DOCUMENT) private document: Document, 
-    private renderer: Renderer2, 
+    @Inject(DOCUMENT) private document: Document,
     router: Router,
     private sidebarService: SidebarService,
     private toastr: ToastrService
-  ) { 
+  ) {
     //Validamos session
     const isLoggedin = sessionStorage.getItem(SESSION_LS_NAME);
 
     if (isLoggedin !== 'true') {
       localStorage.removeItem(SESSION_LS_NAME);
-      sessionStorage.removeItem(SESSION_LS_NAME);
-      sessionStorage.removeItem(SESSION_TYPE_ROL);
+      localStorage.removeItem(SESSION_LS_NAME);
+      localStorage.removeItem(SESSION_TYPE_ROL);
 
       // Redirige a la página de inicio de sesión
       router.navigate(['/auth/login']);
@@ -80,16 +79,15 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     //Consultamos los menus asociados al usuario
     this.sidebarService.getMenuByRol(this.rol).subscribe(
       (res: RequestResultPHP<MenuData>) => {
-  
+
         if (res.success == "1") {
           const menuData: MenuData[] = Object.values(res.result);
 
-          var admin = this.rol === "1";
           //Si no eres admin se filtran los menus
           if(this.rol.toString() != "1"){
             // Obtener las etiquetas permitidas
             const allowedMenuLabels = menuData.map(item => item.label).filter(label => label !== undefined);
-    
+
             // Filtrar el menú basado en las etiquetas permitidas, excluyendo ciertos elementos
             this.menuItems = this.filterMenuItems(MENU, allowedMenuLabels, ['Menu', 'Inicio', 'Opciones']);
           }
@@ -104,7 +102,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       }
     );
   }
-  
+
   // Función para filtrar los elementos del menú basados en etiquetas permitidas, excluyendo ciertos elementos
   filterMenuItems(menu: MenuItem[], allowedLabels: (string | undefined)[], exceptions: string[]): MenuItem[] {
     return menu.filter(item => {
@@ -112,22 +110,22 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       if (item.label !== undefined && exceptions.includes(item.label)) {
         return true;
       }
-  
+
       // Si el elemento tiene subelementos, aplicar recursividad
       if (item.subItems && item.subItems.length > 0) {
         item.subItems = this.filterMenuItems(item.subItems, allowedLabels, exceptions);
         return item.subItems.length > 0;
       }
-  
+
       // Si el label está permitido (y no es undefined), mantener el elemento
       return item.label !== undefined && allowedLabels.includes(item.label);
     });
   }
-  
+
   ngAfterViewInit() {
     // activate menu item
     new MetisMenu(this.sidebarMenu.nativeElement);
-    
+
     this._activateMenuDropdown();
   }
 
@@ -148,7 +146,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
 
   /**
-   * Toggle settings-sidebar 
+   * Toggle settings-sidebar
    */
   toggleSettingsSidebar(e: Event) {
     e.preventDefault();
@@ -221,7 +219,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   resetMenuItems() {
 
     const links = document.getElementsByClassName('nav-link-ref');
-    
+
     for (let i = 0; i < links.length; i++) {
       const menuItemEl = links[i];
       menuItemEl.classList.remove('mm-active');
@@ -230,7 +228,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       if (parentEl) {
           parentEl.classList.remove('mm-active');
           const parent2El = parentEl.parentElement;
-          
+
           if (parent2El) {
             parent2El.classList.remove('mm-show');
           }
@@ -270,13 +268,13 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     const links: any = document.getElementsByClassName('nav-link-ref');
 
     let menuItemEl = null;
-    
+
     for (let i = 0; i < links.length; i++) {
       // tslint:disable-next-line: no-string-literal
         if (window.location.pathname === links[i]['pathname']) {
-          
+
             menuItemEl = links[i];
-            
+
             break;
         }
     }

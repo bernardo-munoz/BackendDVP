@@ -17,6 +17,8 @@ import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { VotantesComponent } from './views/pages/votantes/votantes.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
+import { JwtModule, JwtHelperService } from '@auth0/angular-jwt';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,7 +34,14 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     NgxPaginationModule,
     NgxDatatableModule,
     BrowserAnimationsModule, // required animations module
-    ToastrModule.forRoot(), // ToastrModule added
+    ToastrModule.forRoot(),
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => {
+          return sessionStorage.getItem('access_token'); // Ajusta el nombre del token si es necesario
+        }
+      }
+    }) // ToastrModule added
   ],
   providers: [
     AuthGuard,
@@ -46,7 +55,8 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
           scss: () => import('highlight.js/lib/languages/scss'),
         }
       }
-    }
+    },
+    JwtHelperService
   ],
   bootstrap: [AppComponent]
 })

@@ -35,16 +35,20 @@ export const MENU: MenuItem[] = [
       //   link: '/apps/makedir'
       // },
     ]
-  },  
+  },
   {
     label: 'Usuarios',
     icon: 'users',
-    link: '/apps/users'
-  },  
-  {
-    label: 'Roles',
-    icon: 'user-x',
-    link: '/apps/roles'
+    subItems: [
+      {
+        label: 'Crear Usuarios',
+        link: '/apps/users'
+      },
+      {
+        label: 'Configurar Roles',
+        link: '/apps/roles'
+      },
+    ]
   },
   // {
   //   label: 'Carnetización',

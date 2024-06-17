@@ -17,16 +17,18 @@ export interface RequestResult<T> {
   encontrados: string;
   message: string;
   success: string;
-  result: {};
+  token: string;
+  result: T[];
 }
 
-export interface UserData {
-  apellidos: string;
-  documento: string;
-  email: string;
-  id: string;
-  is_active: string;
-  nombres: string;
-  rol: string;
-  telefono: string;
+export interface Users {
+id_user: string;
+document: string;
+name: string;
+lastname: string;
+phone: string;
+email: string;
+state: string;
+id_rol: string;
+addAt: string;
 }

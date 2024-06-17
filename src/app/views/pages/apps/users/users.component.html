@@ -6,31 +6,31 @@
       <!-- <li class="breadcrumb-item active" aria-current="page">{{ persona }}</li> -->
     </ol>
   </nav>
-  
+
   <div class="row">
     <div class="col-md-6 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-  
+
           <h6 class="card-title">Información Basica</h6>
-  
+
           <form class="forms-sample" #usuarios="ngForm">
             <div class="mb-3">
               <label for="document" class="form-label">Documento</label>
-              <input type="number" class="form-control" name="document" id="document" autocomplete="off" placeholder="Documento" [(ngModel)]="users.documento">
+              <input type="number" class="form-control" name="document" id="document" autocomplete="off" placeholder="Documento" [(ngModel)]="users.document">
             </div>
 
             <div class="mb-3">
                 <label for="name" class="form-label">Nombres</label>
-                <input type="text" class="form-control" name="name" id="name" autocomplete="off" placeholder="Nombres" [(ngModel)]="users.nombres">
+                <input type="text" class="form-control" name="name" id="name" autocomplete="off" placeholder="Nombres" [(ngModel)]="users.name">
             </div>
             <div class="mb-3">
               <label for="lastname" class="form-label">Apellidos</label>
-              <input type="text" class="form-control" name="lastname" id="lastname" autocomplete="off" placeholder="Apellidos" [(ngModel)]="users.apellidos">
+              <input type="text" class="form-control" name="lastname" id="lastname" autocomplete="off" placeholder="Apellidos" [(ngModel)]="users.lastname">
             </div>
             <div class="mb-3">
               <label for="phone" class="form-label">Telefono</label>
-              <input type="text" class="form-control" name="phone" id="phone" autocomplete="off" placeholder="Telefono" [(ngModel)]="users.telefono">
+              <input type="text" class="form-control" name="phone" id="phone" autocomplete="off" placeholder="Telefono" [(ngModel)]="users.phone">
             </div>
             <div class="mb-3">
               <label for="email" class="form-label">Correo</label>
@@ -46,10 +46,20 @@
             </div>
             <div class="mb-3">
                 <label for="state" class="form-label">Estado</label>
-                <select class="form-select" name="state" id="state" [(ngModel)]="selectedState">
+                <ng-select
+                [items]= "states"
+                bindLabel="state"
+                bindValue="state"
+                placeholder="Selecciona un Estado"
+                name="selectedSate"
+                [(ngModel)]="selectedState"
+                [clearable]="true"
+                #selectState
+                ></ng-select>
+                <!-- <select class="form-select" name="state" id="state" [(ngModel)]="selectedState">
                   <option value="Activo"  selected>Activo</option>
                   <option value="Inactivo" >Inactivo</option>
-                </select>
+                </select> -->
             </div>
             <div class="mb-3">
                 <label for="rol" class="form-label">Rol</label>
@@ -66,22 +76,22 @@
                   <option *ngFor="let rol of roles" [value]="rol.id_rol">{{ rol.rol }}</option>
                 </select> -->
             </div>
-              
-            
+
+
             <button class="btn btn-primary me-2" (click)="getUser(usuarios.value.document)">Consultar</button>
             <button class="btn btn-success me-2" (click)="setUser($event)">Guardar</button>
             <button class="btn btn-danger" (click)="cleanForm()">Limpiar</button>
           </form>
-  
+
         </div>
       </div>
     </div>
 
     <div *ngIf="userCreated" class="col-md-6 grid-margin stretch-card">
-      <app-detail-user style="width: 100%;"></app-detail-user>      
+      <app-detail-user style="width: 100%;"></app-detail-user>
     </div>
   </div>
 
   <div class="row">
-    <app-list-user style="width: 100%;"></app-list-user>
-  </div>  
+    <app-list-user [refresh]="refreshList" style="width: 100%;"></app-list-user>
+  </div>
