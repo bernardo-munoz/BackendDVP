@@ -9,7 +9,9 @@ import { Router, NavigationEnd } from '@angular/router';
 import { RequestResultPHP } from 'src/app/models/request-result';
 import { ToastrService } from 'ngx-toastr';
 import { SidebarService } from './services/sidebar.service';
-import { SESSION_ID_ROL, SESSION_LS_NAME, SESSION_TYPE_ROL } from 'src/app/models/consts';
+import { SESSION_DATA_USER, SESSION_ID_ROL, SESSION_ID_USER, SESSION_LS_NAME, SESSION_TOKEN, SESSION_TYPE_ROL } from 'src/app/models/consts';
+import { RequestResult, Users } from '../../pages/auth/model/auth';
+import { Roles } from '../../pages/apps/users/model/user';
 
 @Component({
   selector: 'app-sidebar',
@@ -35,8 +37,11 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
     if (isLoggedin !== 'true') {
       localStorage.removeItem(SESSION_LS_NAME);
-      localStorage.removeItem(SESSION_LS_NAME);
-      localStorage.removeItem(SESSION_TYPE_ROL);
+      sessionStorage.removeItem(SESSION_LS_NAME);
+      sessionStorage.removeItem(SESSION_TYPE_ROL);
+      sessionStorage.removeItem(SESSION_ID_USER);
+      sessionStorage.removeItem(SESSION_TOKEN);
+      sessionStorage.removeItem(SESSION_DATA_USER);
 
       // Redirige a la página de inicio de sesión
       router.navigate(['/auth/login']);
@@ -76,50 +81,27 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   }
 
   getMenuItem() {
-    //Consultamos los menus asociados al usuario
-    this.sidebarService.getMenuByRol(this.rol).subscribe(
-      (res: RequestResultPHP<MenuData>) => {
+    const userData: Users = JSON.parse(sessionStorage.getItem(SESSION_DATA_USER) ?? "");
 
-        if (res.success == "1") {
-          const menuData: MenuData[] = Object.values(res.result);
+    // Si es cliente, limitar el menú o el acceso a algunas rutas
+    if (userData.rol === "Cliente") {
+      // Obtener las etiquetas permitidas para el cliente
+      const allowedLabels = ['Menu', 'Inicio', 'Opciones', 'Documentos'];
 
-          //Si no eres admin se filtran los menus
-          if(this.rol.toString() != "1"){
-            // Obtener las etiquetas permitidas
-            const allowedMenuLabels = menuData.map(item => item.label).filter(label => label !== undefined);
+      // Filtrar el menú basado en las etiquetas permitidas
+      this.menuItems = MENU.filter(item => {
 
-            // Filtrar el menú basado en las etiquetas permitidas, excluyendo ciertos elementos
-            this.menuItems = this.filterMenuItems(MENU, allowedMenuLabels, ['Menu', 'Inicio', 'Opciones']);
-          }
+        if (item.label !== undefined && !allowedLabels.includes(item.label)) {
+          return false;
         }
-        else{
-          this.menuItems = [];
-        }
-      },
-      (error: any) => {
-        console.error(error);
-        this.toastr.error('Error al consultar la información de carnetización. Intente nuevamente.');
-      }
-    );
-  }
 
-  // Función para filtrar los elementos del menú basados en etiquetas permitidas, excluyendo ciertos elementos
-  filterMenuItems(menu: MenuItem[], allowedLabels: (string | undefined)[], exceptions: string[]): MenuItem[] {
-    return menu.filter(item => {
-      // Verificar si el elemento es una excepción, si lo es, mantenerlo
-      if (item.label !== undefined && exceptions.includes(item.label)) {
-        return true;
-      }
+        return true; // Mantener el elemento principal si pasa todas las condiciones
+      });
 
-      // Si el elemento tiene subelementos, aplicar recursividad
-      if (item.subItems && item.subItems.length > 0) {
-        item.subItems = this.filterMenuItems(item.subItems, allowedLabels, exceptions);
-        return item.subItems.length > 0;
-      }
-
-      // Si el label está permitido (y no es undefined), mantener el elemento
-      return item.label !== undefined && allowedLabels.includes(item.label);
-    });
+    } else {
+      // Otros roles (por ejemplo, administrador) tendrían acceso completo al menú definido en MENU
+      this.menuItems = MENU;
+    }
   }
 
   ngAfterViewInit() {

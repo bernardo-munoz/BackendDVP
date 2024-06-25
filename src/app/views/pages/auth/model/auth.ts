@@ -14,21 +14,33 @@ export interface LoginData{
 }
 
 export interface RequestResult<T> {
-  encontrados: string;
   message: string;
-  success: string;
-  token: string;
+  success: boolean;
+  token?: string;
+  result: T;
+}
+
+export interface RequestResultObject<T> {
+  message: string;
+  success: boolean;
+  token?: string;
   result: T[];
 }
 
 export interface Users {
-id_user: string;
+userID: string;
 document: string;
 name: string;
 lastname: string;
-phone: string;
+address: string;
 email: string;
+phone: string;
+password: string;
+urlPicProfile : string;
+urlImageSignature: string;
 state: string;
-id_rol: string;
+rol?: string;
+rolID: string;
+isAdmin: boolean;
 addAt: string;
 }

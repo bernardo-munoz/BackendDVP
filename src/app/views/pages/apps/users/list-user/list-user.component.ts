@@ -7,6 +7,7 @@ import * as XLSX from 'xlsx';
 import 'datatables.net-buttons/js/dataTables.buttons';
 import 'datatables.net-buttons/js/buttons.html5';
 import { SharedService } from 'services/shared.service';
+import { RequestResultObject } from '../../../auth/model/auth';
 
 @Component({
   selector: 'app-list-user',
@@ -16,24 +17,39 @@ import { SharedService } from 'services/shared.service';
 export class ListUserComponent implements OnInit {
   @Input() refresh: boolean = false;
   users:Users[] = [];
-  filteredUsers: Users[] = [];
-  searchText: string = '';
-  currentPage: number = 1;
-  itemsPerPage: number = 10;
   dataTable: DataTable;
-  totalItems: number = 0;     // Total de items para la paginación
 
   constructor(
     private userService: UserService,
     private sharedService:SharedService
   ) { }
 
-  ngAfterViewInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['refresh'] && changes['refresh'].currentValue === true) {
+      this.getListUsers();
+      this.refresh = false;  // Resetear el valor después de refrescar
+    }
+  }
 
+  ngAfterViewInit(): void {
     // Agregar evento al botón de exportar
     const exportButton = document.getElementById('exportButton');
     if (exportButton) {
       exportButton.addEventListener('click', () => this.exportToExcel(this.dataTable));
+    }
+
+    // Delegación de eventos para los clics en los iconos de edición
+    const listUsersElement = document.querySelector('#listUsers');
+    if (listUsersElement) {
+      listUsersElement.addEventListener('click', (event: Event) => {
+        const target = event.target as HTMLElement;
+        if (target && target.classList.contains('fa-eye')) {
+          const userId = target.getAttribute('data-user-id');
+          if (userId) {
+            this.getUser(userId);
+          }
+        }
+      });
     }
   }
 
@@ -41,51 +57,27 @@ export class ListUserComponent implements OnInit {
     this.getListUsers();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.refresh && changes.refresh.currentValue) {
-
-      if(this.refresh)
-        this.getListUsers();
-
-      this.refresh = false;
-
-    }
-  }
-
   getUser(id_user: string){
     this.userService.setUserSelectedEdit(id_user);
   }
 
   getListUsers(){
-    this.userService.getListUsers().subscribe((data: RequestResultPHP<Users>) => {
+    this.userService.getListUsers().subscribe((data: RequestResultObject<Users>) => {
 
-      if (data.success === '1') {
-        this.users = Object.values(data.result);
+      if (data.success) {
+        this.users = data.result;
 
-        this.applyFilter();
+        // Asegurarse de que DataTable se inicializa después de que los datos se asignen
+        setTimeout(() => {
+          if (this.dataTable) {
+            this.dataTable.destroy(); // Destruye la instancia existente antes de crear una nueva
+          }
+          this.dataTable = new DataTable("#listUsers");
+        }, 100);
       }
     });
   }
 
-  applyFilter() {
-    if (this.searchText) {
-      this.filteredUsers = this.users.filter(user =>
-        user.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        user.document.toLowerCase().includes(this.searchText.toLowerCase())
-      );
-    } else {
-      this.filteredUsers = [...this.users];
-    }
-  }
-
-  onSearchTextChange() {
-    this.applyFilter();
-    this.currentPage = 1;
-  }
-
-  pageChanged(event: any) {
-    this.currentPage = event.page;
-  }
 
   exportToExcel(dataTable: DataTable): void {
     this.sharedService.showLoader(true);

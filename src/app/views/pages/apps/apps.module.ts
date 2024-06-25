@@ -13,14 +13,6 @@ import { NgbDropdownModule, NgbTooltipModule, NgbNavModule, NgbCollapseModule } 
 import { NgSelectModule } from '@ng-select/ng-select';
 
 import { AppsComponent } from './apps.component';
-import { CalendarComponent } from './calendar/calendar.component';
-import { ChatComponent } from './chat/chat.component';
-import { EmailComponent } from './email/email.component';
-import { InboxComponent } from './email/inbox/inbox.component';
-import { ReadComponent } from './email/read/read.component';
-import { ComposeComponent } from './email/compose/compose.component';
-import { TakePicComponent } from './carnetizacion/picture/take-pic.component';
-import { LicenseComponent } from './license/license.component';
 
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
@@ -39,18 +31,14 @@ FullCalendarModule.registerPlugins([
 
 // ngx-quill
 import { QuillModule } from 'ngx-quill';
-import { ModalUserComponent } from './carnetizacion/picture/modal-user/modal-user.component';
-import { CameraComponent } from './carnetizacion/picture/camera/camera.component';
 import { LoaderComponent } from '../../layout/loader/loader.component';
-import { WorkingdayComponent } from './workingday/workingday.component';
-import { MakedirComponent } from './carnetizacion/makedir/makedir.component';
 import { UsersComponent } from './users/users.component';
-import { DetailUserComponent } from './users/detail-user/detail-user.component';
-import { ExportRegisterComponent } from './carnetizacion/export-register/export-register.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { RolesComponent } from './users/roles/roles.component';
 import { ListUserComponent } from './users/list-user/list-user.component';
+import { CameraComponent } from './users/camera/camera.component';
+import { PendingDocumentsComponent } from './pending-documents/pending-documents.component';
+import { SignedDocumentsComponent } from './signed-documents/signed-documents.component';
 
 const routes: Routes = [
   {
@@ -59,91 +47,27 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'calendar',
+        redirectTo: 'users',
         pathMatch: 'full',
-      },
-      {
-        path: 'email',
-        component: EmailComponent,
-        children: [
-          {
-            path: '',
-            redirectTo: 'inbox',
-            pathMatch: 'full'
-          },
-          {
-            path: 'inbox',
-            component: InboxComponent
-          },
-          {
-            path: 'read',
-            component: ReadComponent
-          },
-          {
-            path: 'compose',
-            component: ComposeComponent
-          }
-        ]
-      },
-      {
-        path: 'chat',
-        component: ChatComponent
-      },
-      {
-        path: 'calendar',
-        component: CalendarComponent
-      },
-      {
-        path: 'license',
-        component: LicenseComponent,
-        children: [
-          {
-            path: '',
-            redirectTo: 'license',
-            pathMatch: 'full'
-          },
-          {
-            path: 'read',
-            component: ReadComponent
-          },
-          {
-            path: 'compose',
-            component: ComposeComponent
-          }
-        ]
-      },
-      {
-        path: 'picture',
-        component: TakePicComponent
-
-      },
-      {
-        path: 'workingday',
-        component: WorkingdayComponent
-
-      },
-      {
-        path: 'makedir',
-        component: MakedirComponent
       },
       {
         path: 'users',
         component: UsersComponent
       },
       {
-        path: 'export-register',
-        component: ExportRegisterComponent
+        path: 'pending-documents',
+        component: PendingDocumentsComponent
       },
       {
-        path: 'roles',
-        component: RolesComponent
+        path: 'signed-documents',
+        component: SignedDocumentsComponent
       },
     ]
   }
 ]
 
 @NgModule({
-  declarations: [EmailComponent, ChatComponent, CalendarComponent, AppsComponent, InboxComponent, ReadComponent, ComposeComponent, TakePicComponent, LicenseComponent, ModalUserComponent, CameraComponent, LoaderComponent, WorkingdayComponent, MakedirComponent, UsersComponent, DetailUserComponent, ExportRegisterComponent, RolesComponent, ListUserComponent],
+  declarations: [AppsComponent, LoaderComponent, UsersComponent, ListUserComponent, CameraComponent, PendingDocumentsComponent, SignedDocumentsComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),

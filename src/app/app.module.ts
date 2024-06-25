@@ -11,19 +11,15 @@ import { LayoutModule } from './views/layout/layout.module';
 import { AuthGuard } from './core/guard/auth.guard';
 
 import { AppComponent } from './app.component';
-import { ErrorPageComponent } from './views/pages/error-page/error-page.component';
 
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
-import { VotantesComponent } from './views/pages/votantes/votantes.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { JwtModule, JwtHelperService } from '@auth0/angular-jwt';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ErrorPageComponent,
-    VotantesComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,

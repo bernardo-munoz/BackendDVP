@@ -1,22 +1,24 @@
 export interface Users{
-  id_user: string;
+  userID: string;
   document: string;
   name: string;
   lastname: string;
+  address: string;
   phone: string;
   email: string;
   state: string;
-  id_rol: string;
+  rolID: string;
   addAt: string;
   rol: string;
   password?:string;
   confirm_password?:string;
-
+  isAdmin?: boolean;
 }
 
 export interface Roles{
     id_rol: string;
     rol: string;
+    code?:string;
     state?: string;
 }
 

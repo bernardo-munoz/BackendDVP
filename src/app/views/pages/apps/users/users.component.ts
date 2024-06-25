@@ -4,6 +4,7 @@ import { Permisos, Roles, States, Users } from './model/user';
 import { UserService } from './services/user.service';
 import { RequestResultPHP } from '../../../../models/request-result';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { RequestResult, RequestResultObject } from '../../auth/model/auth';
 
 @Component({
   templateUrl: './users.component.html',
@@ -13,22 +14,23 @@ export class UsersComponent implements OnInit {
 
   @ViewChild('selectRol') selectRol: NgSelectComponent;
   public refreshList: boolean = false;
-  public userCreated: boolean = false;
   selectedRole: string;
   selectedState: string;
   public documentUserSelected: string;
   public states:States[] = [{id_state: "0", state: "Inactivo"}, {id_state:"1", state: "Activo"}];
   public roles:Roles[] = [];
   public permisos:Permisos[] = [];
+  public userExist: boolean = false;
 
   public users: Users = {
-    id_rol: '',
+    rolID: '',
     rol: '',
     document: '',
     name: '',
     lastname: '',
-    id_user: '',
+    userID: '',
     phone: '',
+    address: '',
     email: '',
     state: '',
     addAt: ''
@@ -53,17 +55,18 @@ export class UsersComponent implements OnInit {
 
   cleanForm(){
 
-    // this.selectedRole = this.roles[0].id_rol;
+    // this.selectedRole = this.roles[0].rolID;
     this.selectRol.clearModel();
     this.selectedState = 'Activo';
-    this.userCreated = false;
+    this.userExist = false;
     this.users = {
-      id_rol: '',
+      rolID: '',
       rol: '',
       document: '',
       name: '',
       lastname: '',
-      id_user: '',
+      address: '',
+      userID: '',
       phone: '',
       email: '',
       state: '',
@@ -71,44 +74,27 @@ export class UsersComponent implements OnInit {
     };
   }
 
-  getUser(id_user: string): void{
+  getUser(userID: string): void{
 
-    if(id_user == undefined)
+    if(userID == undefined)
       this.toastr.warning("El ID del usuario es obligatorio.");
     else
-      this.userService.getUserByID(id_user)
-      .subscribe((data:RequestResultPHP<Users>) => {
+      this.userService.getUserByID(userID)
+      .subscribe((data:RequestResult<Users>) => {
 
-        if(data.success == "1"){
+        if(data.success){
           this.toastr.success(data.message);
           //Colocamos la bandera de refrescar lista de usuarios en false
           this.refreshList = false;
-          this.users =  {
-            id_user: data.result[0].id_user,
-            document: data.result[0].document,
-            name: data.result[0].name,
-            lastname: data.result[0].lastname,
-            phone: data.result[0].phone,
-            email: data.result[0].email,
-            password: data.result[0].password,
-            confirm_password: data.result[0].password,
-            id_rol: data.result[0].id_rol,
-            rol: data.result[0].rol,
-            state: data.result[0].state,
-            addAt: data.result[0].addAt
-          };
+          this.users =  data.result;
+          this.users.confirm_password = data.result.password;
+          this.selectedRole = data.result.rol;
+          this.userExist = true;
 
-          const selectedRole = this.roles.find(role => role.id_rol === String(data.result[0].id_rol));
+          if (this.selectedRole) {
 
-          if (selectedRole) {
-            this.selectedRole = selectedRole.rol;
-            // this.selectRol.writeValue(selectedRole);
-
-            this.selectedState = data.result[0].state == "1" ? "Activo" : "Inactivo";
-            //Seteamos el documento del usuario buscado
+            this.selectedState = data.result.state;
             this.userService.setUserSelected(this.users.document);
-            this.userService.setRolUserSelected(selectedRole.id_rol);
-            this.userCreated = true;
           }
 
         }
@@ -121,9 +107,9 @@ export class UsersComponent implements OnInit {
 
   getRoles(){
 
-    this.userService.getRoles().subscribe((data: RequestResultPHP<Roles>) => {
+    this.userService.getRoles().subscribe((data: RequestResultObject<Roles>) => {
 
-      if(data.success == "1"){
+      if(data.success){
         this.toastr.success(data.message);
         this.roles = this.roles.concat(Object.values(data.result));
       }
@@ -137,15 +123,19 @@ export class UsersComponent implements OnInit {
     e.preventDefault();
     const selectedRole = this.roles.find(role => role.rol === this.selectedRole);
     if(selectedRole){
-      this.users.id_rol = selectedRole?.id_rol;
+      this.users.rolID = selectedRole?.id_rol;
       this.users.state = this.selectedState;
-      this.userService.setUser(this.users).subscribe(
-        (response: RequestResultPHP<Users>) => {
-          if(response.success == "1" || response.success == "2"){
+      this.userService.setUser(this.users, this.userExist).subscribe(
+        (response: RequestResult<Users>) => {
+          if(response.success){
 
-            this.refreshList = true;
-            this.cleanForm();
-            this.toastr.success(response.message);
+            this.refreshList = false;
+            setTimeout(() => {
+              this.refreshList = true;
+              this.cleanForm();
+              this.toastr.success(response.message);
+            }, 0);
+
           }
           else
             this.toastr.warning(response.message);

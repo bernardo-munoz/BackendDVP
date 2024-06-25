@@ -1,4 +1,3 @@
 {
-  "urlApi": "https://imc-st.com/uds/controller/",
-  "urlPhoto": "https://imc-st.com/uds/img/carnet/"
+  "urlApi": "https://localhost:44386/api/"
 }

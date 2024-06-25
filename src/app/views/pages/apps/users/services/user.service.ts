@@ -4,11 +4,10 @@ import { BehaviorSubject, catchError, map, Observable, retry, throwError } from 
 import { ConfigService } from 'services/config.service';
 import { SharedService } from 'services/shared.service';
 import { RequestResultPHP } from 'src/app/models/request-result';
-import { MenuData } from 'src/app/views/layout/sidebar/menu.model';
-import { User } from '../../carnetizacion/picture/model/person';
 import { Roles, Users, Modulos, Permisos, MenuRol } from '../model/user';
 import { SESSION_TOKEN } from 'src/app/models/consts';
 import { Router } from '@angular/router';
+import { RequestResult, RequestResultObject } from '../../../auth/model/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -35,21 +34,21 @@ export class UserService {
     return throwError(error);
   }
 
-  getUserByID(id_user: string) {
+  getUserByID(id_user: string): Observable<RequestResult<Users>> {
     this.sharedService.showLoader(true);
 
     // Obtener el token de localStorage o sessionStorage
     const token = sessionStorage.getItem(SESSION_TOKEN);
 
     const body = new URLSearchParams();
-    body.set('id_user', id_user);
+    body.set('UserID', id_user);
 
     const headers = new HttpHeaders()
     .set('Content-Type', 'application/x-www-form-urlencoded')
     .set('Authorization',`Bearer ${token}`);
 
     return this.http
-      .post<RequestResultPHP<Users>>(`${this.configService?.config?.urlApi}getUserByID.php`,
+      .post<RequestResult<Users>>(`${this.configService?.config?.urlApi}Users/GetUsersById`,
         body.toString(), // Envía los datos en el formato application/x-www-form-urlencoded
         { headers: headers }
       )
@@ -116,30 +115,35 @@ export class UserService {
         })
       );
   }
-
-  setUser(user: Users) {
+  setUser(user: Users, userExist: boolean) {
     this.sharedService.showLoader(true);
 
     // Obtener el token de localStorage o sessionStorage
     const token = sessionStorage.getItem(SESSION_TOKEN);
 
-    const body = new URLSearchParams();
-    body.set('document', user.document);
-    body.set('name', user.name);
-    body.set('lastname', user.lastname);
-    body.set('phone', user.phone);
-    body.set('email', user.email);
-    body.set('password', user.password ?? "");
-    body.set('id_rol', user.id_rol);
-    body.set('state', user.state == "Activo" ? "1" : "0");
+    const body = {
+      userID: user.userID,
+      document: user.document.toString(),
+      name: user.name,
+      lastname: user.lastname,
+      address: user.address,
+      phone: user.phone,
+      email: user.email,
+      password: user.password,
+      rolID: user.rolID,
+      state: user.state == "Activo" ? "1" : "0",
+      isAdmin: user.rol == "Administrador"
+    }
 
     const headers = new HttpHeaders()
-    .set('Content-Type', 'application/x-www-form-urlencoded')
-    .set('Authorization',`Bearer ${token}`);
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `Bearer ${token}`);
+
+    var endPoint = userExist ? "Users/UpdateUsers" : "Users/CreateUser";
 
     return this.http
-      .post<RequestResultPHP<Users>>(`${this.configService?.config?.urlApi}setUsers.php`,
-        body.toString(), // Envía los datos en el formato application/x-www-form-urlencoded
+      .post<RequestResult<Users>>(`${this.configService?.config?.urlApi}${endPoint}`,
+        JSON.stringify(body),
         { headers: headers }
       )
       .pipe(
@@ -164,7 +168,8 @@ export class UserService {
       );
   }
 
-  getRoles() {
+
+  getRoles(): Observable<RequestResultObject<Roles>> {
     this.sharedService.showLoader(true);
 
     // Obtener el token de localStorage o sessionStorage
@@ -175,7 +180,7 @@ export class UserService {
     .set('Authorization',`Bearer ${token}`);
 
     return this.http
-      .get<RequestResultPHP<Roles>>(`${this.configService?.config?.urlApi}getRoles.php`,
+      .get<RequestResultObject<Roles>>(`${this.configService?.config?.urlApi}Roles/GetAllRoles`,
         { headers: headers }
       )
       .pipe(
@@ -192,118 +197,6 @@ export class UserService {
           this.sharedService.showLoader(false);
           this.sharedService.error(errorMessage);
           return throwError(() => new Error(errorMessage));
-        }),
-        map((response) => {
-          this.sharedService.showLoader(false);
-          return response;
-        })
-      );
-  }
-
-  getMenu() {
-    this.sharedService.showLoader(true);
-
-    // Obtener el token de localStorage o sessionStorage
-    const token = sessionStorage.getItem(SESSION_TOKEN);
-
-    const headers = new HttpHeaders()
-    .set('Content-Type', 'application/x-www-form-urlencoded')
-    .set('Authorization',`Bearer ${token}`);
-
-    return this.http
-      .get<RequestResultPHP<MenuData>>(`${this.configService?.config?.urlApi}getMenu.php`,
-        { headers: headers }
-      )
-      .pipe(
-        retry(0),
-        catchError((error: HttpErrorResponse) => {
-          let errorMessage = '';
-          if (error.status === 401) {
-            errorMessage = 'Token expirado o no válido. Por favor, inicia sesión de nuevo.';
-
-            this.router.navigate(['/auth/login']);
-          } else {
-            errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-          }
-          this.sharedService.showLoader(false);
-          this.sharedService.error(errorMessage);
-          return throwError(() => new Error(errorMessage));
-        }),
-        map((response) => {
-          this.sharedService.showLoader(false);
-          return response;
-        })
-      );
-  }
-
-  getMenuByRol(rol:string) {
-    this.sharedService.showLoader(true);
-
-    // Obtener el token de localStorage o sessionStorage
-    const token = sessionStorage.getItem(SESSION_TOKEN);
-
-    const body = new URLSearchParams();
-    body.set('rol', rol);
-
-    const headers = new HttpHeaders()
-    .set('Content-Type', 'application/x-www-form-urlencoded')
-    .set('Authorization',`Bearer ${token}`);
-
-    return this.http
-      .post<RequestResultPHP<MenuData>>(
-        `${this.configService?.config?.urlApi}getMenuByRol.php`,
-        body.toString(), // Envía los datos en el formato application/x-www-form-urlencoded
-        { headers: headers }
-      )
-      .pipe(
-        retry(0),
-        catchError((error: HttpErrorResponse) => {
-          let errorMessage = '';
-          if (error.status === 401) {
-            errorMessage = 'Token expirado o no válido. Por favor, inicia sesión de nuevo.';
-
-            this.router.navigate(['/auth/login']);
-          } else {
-            errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-          }
-          this.sharedService.showLoader(false);
-          this.sharedService.error(errorMessage);
-          return throwError(() => new Error(errorMessage));
-        }),
-        map((response) => {
-          this.sharedService.showLoader(false);
-          return response;
-        })
-      );
-  }
-
-  setMenuRol(menuRol: MenuRol) {
-    this.sharedService.showLoader(true);
-
-    // Obtener el token de localStorage o sessionStorage
-    const token = sessionStorage.getItem(SESSION_TOKEN);
-
-    const body = new URLSearchParams();
-    body.set('id_menu', menuRol.id_menu);
-    body.set('id_rol', menuRol.id_rol);
-    body.set('state', menuRol.state? "1" : "0");
-
-    const headers = new HttpHeaders()
-    .set('Content-Type', 'application/x-www-form-urlencoded')
-    .set('Authorization',`Bearer ${token}`);
-
-
-    return this.http
-      .post<RequestResultPHP<MenuRol>>(`${this.configService?.config?.urlApi}setMenuRol.php`,
-        body.toString(),
-        { headers: headers }
-      )
-      .pipe(
-        retry(0),
-        catchError((error) => {
-          this.sharedService.showLoader(false);
-          // Manejo de errores
-          return this.handleError(error);
         }),
         map((response) => {
           this.sharedService.showLoader(false);
@@ -323,7 +216,7 @@ export class UserService {
     .set('Authorization',`Bearer ${token}`);
 
     return this.http
-      .get<RequestResultPHP<Users>>(`${this.configService?.config?.urlApi}getListUsers.php`,
+      .get<RequestResultObject<Users>>(`${this.configService?.config?.urlApi}Users/GetAllUsers`,
         { headers: headers }
       )
       .pipe(
@@ -346,14 +239,6 @@ export class UserService {
 
   getUserSelected(): Observable<string | null> {
     return this.selectedUserSubject.asObservable();
-  }
-
-  setRolUserSelected(rol: string){
-    this.selectedRolUserSubject.next(rol)
-  }
-
-  getRolUserSelected(): Observable<string | null> {
-    return this.selectedRolUserSubject.asObservable();
   }
 
   setUserSelectedEdit(id_user: string){
