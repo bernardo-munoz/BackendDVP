@@ -52,7 +52,9 @@ Para ejecutar este proyecto en tu máquina local, sigue los siguientes pasos:
 
 1. **Login**:
    - Navega a la página de login (`http://localhost:4200/syspotecsas/auth/login`). 
-   - Ingresa tus credenciales de administrador para acceder al sistema.
+   - Se configuró un usuario administrador por defecto para el acceso inicial:
+   - usuario = 12345
+   - contraseña: 8xYqX0Pg
 
 2. **Registro de Clientes**:
    - Una vez autenticado, navega a la página de registro de clientes (`http://localhost:4200/syspotecsas/auth/register`).
