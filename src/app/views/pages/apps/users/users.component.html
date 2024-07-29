@@ -1,9 +1,8 @@
-<app-loader></app-loader>
+<!-- <app-loader></app-loader>
 
 <nav class="page-breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a routerLink=".">Usuarios</a></li>
-      <!-- <li class="breadcrumb-item active" aria-current="page">{{ persona }}</li> -->
     </ol>
   </nav>
 
@@ -60,10 +59,7 @@
                 [clearable]="true"
                 #selectState
                 ></ng-select>
-                <!-- <select class="form-select" name="state" id="state" [(ngModel)]="selectedState">
-                  <option value="Activo"  selected>Activo</option>
-                  <option value="Inactivo" >Inactivo</option>
-                </select> -->
+             
             </div>
             <div class="mb-3">
                 <label for="rol" class="form-label">Rol</label>
@@ -76,13 +72,9 @@
                   [clearable]="true"
                   #selectRol>
                 </ng-select>
-                <!-- <select class="form-select" name="rol" id="rol" [(ngModel)]="selectedRole">
-                  <option *ngFor="let rol of roles" [value]="rol.id_rol">{{ rol.rol }}</option>
-                </select> -->
             </div>
 
 
-            <!-- <button class="btn btn-primary me-2" (click)="getUser(usuarios.value.document)">Consultar</button> -->
             <button class="btn btn-success me-2" (click)="setUser($event)">Guardar</button>
             <button class="btn btn-danger" (click)="cleanForm()">Limpiar</button>
           </form>
@@ -94,7 +86,7 @@
     <div class="col-md-6 grid-margin stretch-card">
       <app-camera></app-camera>
     </div>
-  </div>
+  </div> -->
 
   <div class="row">
     <app-list-user [refresh]="refreshList" style="width: 100%;"></app-list-user>

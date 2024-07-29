@@ -15,25 +15,11 @@ export const MENU: MenuItem[] = [
     isTitle: true
   },
   {
-    label: 'Documentos',
-    icon: 'file-minus',
-    subItems: [
-      {
-        label: 'Pendientes',
-        link: '/apps/pending-documents',
-      },
-      {
-        label: 'Firmados',
-        link: '/apps/signed-documents'
-      },
-    ]
-  },
-  {
     label: 'Usuarios',
     icon: 'users',
     subItems: [
       {
-        label: 'Crear Usuarios',
+        label: 'Listar Usuarios',
         link: '/apps/users'
       }
     ]

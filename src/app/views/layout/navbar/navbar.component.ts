@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { Router } from '@angular/router';
 import { SESSION_DATA_USER, SESSION_ID_USER, SESSION_LS_NAME, SESSION_TOKEN, SESSION_TYPE_ROL } from 'src/app/models/consts';
 import { SharedService } from 'services/shared.service';
-import { RequestResult, Users } from '../../pages/auth/model/auth';
+import { Persons, RequestResult, Users } from '../../pages/auth/model/auth';
 import { LoginService } from '../../pages/auth/services/login.service';
 
 @Component({
@@ -13,21 +13,16 @@ import { LoginService } from '../../pages/auth/services/login.service';
 })
 export class NavbarComponent implements OnInit {
 
-  dataUser: Users = {
+  dataUser: Persons = {
+    id: '',
     name: '',
-    userID: '',
-    document: '',
     lastname: '',
-    phone: '',
+    numberDocument: 0,
     email: '',
-    state: '',
-    rolID: '',
+    typeDocument: '',
     addAt: '',
-    address: '',
-    password: '',
-    urlPicProfile: '',
-    urlImageSignature: '',
-    isAdmin: false
+    numberDocumentTypeDocument: '',
+    fullName: ''
   };
 
   constructor(

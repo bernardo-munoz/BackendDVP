@@ -5,7 +5,7 @@
         <div class="col-md-6 pe-md-0">
           <div class="auth-side-wrapper"
             [ngStyle]="{
-              'background-image': 'url(assets/images/others/syspotec_logo.png)',
+              'background-image': 'url(assets/images/others/dvp_logo.png)',
               'background-size':'contain',
               'background-repeat': 'no-repeat',
               'background-position': 'center center' }">
@@ -13,12 +13,12 @@
         </div>
         <div class="col-md-6 ps-md-0">
           <div class="auth-form-wrapper px-4 py-5">
-            <a routerLink="." class="nobleui-logo d-block mb-2">SYSPOTEC</a>
+            <a routerLink="." class="nobleui-logo d-block mb-2">DVP</a>
             <h5 class="text-muted fw-normal mb-4">Bienvenido! Por favor, ingresa tus credenciales.</h5>
             <form class="forms-sample">
               <div class="mb-3">
-                <label for="documentNumber" class="form-label">Numero Documento</label>
-                <input type="number" class="form-control" #documentNumber id="documentNumber"(keyup)="validateLenght($event)" placeholder="Documento">
+                <label for="documentNumber" class="form-label">Usuario</label>
+                <input type="text" class="form-control" #documentNumber id="documentNumber" placeholder="Usuario">
               </div>
               <div class="mb-3">
                 <label for="pass" class="form-label">Contraseña</label>

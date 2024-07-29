@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LoginService } from '../services/login.service';
 import { ToastrService } from 'ngx-toastr';
-import { RequestResult, Users } from '../model/auth';
+import { Persons, RequestResult, Users } from '../model/auth';
 import { SESSION_DATA_USER, SESSION_ID_ROL, SESSION_ID_USER, SESSION_LS_NAME, SESSION_TOKEN, SESSION_TYPE_ROL } from 'src/app/models/consts';
 
 
@@ -51,13 +51,21 @@ export class LoginComponent implements OnInit {
 
         const token = response.token ?? "";
         sessionStorage.setItem(SESSION_TOKEN, token);
-        sessionStorage.setItem(SESSION_DATA_USER, JSON.stringify(response.result));
+        
 
-        const { name, lastname } = response.result;
-
-        this.toastr.success("Bienvenido " + name + " " + lastname);
+        
         sessionStorage.setItem(SESSION_LS_NAME, 'true'); // Cambiado de localStorage a sessionStorage
         sessionStorage.setItem(SESSION_ID_ROL, response.result.rolID);
+
+        this.loginService.getPersonByNumberDocument(document).subscribe( (response: RequestResult<Persons>) => {
+
+          if(response.success ){
+            this.toastr.success("Bienvenido " + response.result.name + " " + response.result.lastname);
+            sessionStorage.setItem(SESSION_DATA_USER, JSON.stringify(response.result));
+          }
+
+        })
+
 
         this.router.navigate([this.returnUrl]);
       }

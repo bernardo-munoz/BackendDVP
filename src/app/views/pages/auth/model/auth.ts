@@ -44,3 +44,21 @@ rolID: string;
 isAdmin: boolean;
 addAt: string;
 }
+
+export interface TypeDocument{
+  id: string;
+  type: string;
+  abbreviation: string;
+}
+
+export interface Persons {
+  id: string;
+  name: string;
+  lastname : string;
+  numberDocument : number;
+  email : string; 
+  typeDocument : string; 
+  addAt : string; 
+  numberDocumentTypeDocument : string;
+  fullName : string;
+}

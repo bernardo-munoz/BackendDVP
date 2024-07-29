@@ -5,6 +5,7 @@ import { RegisterComponent } from './register/register.component';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthComponent } from './auth.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 const routes: Routes = [
   {
@@ -33,6 +34,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    NgSelectModule,
     RouterModule.forChild(routes)
   ]
 })

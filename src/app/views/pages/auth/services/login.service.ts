@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, map, retry, throwError } from 'rxjs';
 import { ConfigService } from 'services/config.service';
 import { SharedService } from 'services/shared.service';
-import { RequestResult, Users } from '../model/auth';
+import { Persons, RequestResult, TypeDocument, Users } from '../model/auth';
 import { SESSION_TOKEN } from 'src/app/models/consts';
 
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -35,8 +35,8 @@ export class LoginService {
   setLogin(document: string, password: string): Observable<RequestResult<Users>> {
   // Crea el cuerpo de la solicitud en formato JSON
   const body = {
-    document: document,
-    password: password
+    user: document,
+    pass: password
   };
 
   // Configura los encabezados para enviar datos en formato JSON
@@ -90,27 +90,20 @@ export class LoginService {
   setUsers(formData: any): Observable<RequestResult<Users>> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    const body: Users = {
-      document: formData.numberDocument,
-      name: formData.nameUser,
-      lastname: formData.lastNameUser,
-      address: formData.address,
-      email: formData.emailAddress,
-      phone: formData.phone,
-      password: formData.pass,
-      urlPicProfile: '',
-      urlImageSignature: '',
-      state: "1",
-      isAdmin: false,
-      addAt: new Date().toISOString(),
-      userID: '',
-      rolID: ''
-    };
+    const body = {
+      "name": formData.name,
+      "lastname": formData.lastname,
+      "typeDocument": formData.typeDocument,
+      "numberDocument": formData.document,
+      "email": formData.email,
+      "user": formData.user,
+      "pass": formData.password
+    }
 
     return this.http
       .post<RequestResult<Users>>(
-        `${this.configService?.config?.urlApi}Users/CreateUser`,
-        JSON.stringify(formData),
+        `${this.configService?.config?.urlApi}Users/CreatePersonUser`,
+        JSON.stringify(body),
         { headers: headers }
       )
       .pipe(
@@ -119,6 +112,71 @@ export class LoginService {
           let errorMessage = '';
           if (error.status === 401) {
             errorMessage = 'Token expirado o no válido. Por favor, inicia sesión de nuevo.';
+            this.router.navigate(['/auth/login']);
+          } else {
+            errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+          }
+          this.sharedService.showLoader(false);
+          this.sharedService.error(errorMessage);
+          return throwError(() => new Error(errorMessage));
+        }),
+        map((response) => {
+          this.sharedService.showLoader(false);
+          return response;
+        })
+      );
+  }
+
+  getTypeDocuments(): Observable<RequestResult<TypeDocument>> {
+    this.sharedService.showLoader(true);
+
+    const headers = new HttpHeaders()
+    .set('Content-Type', 'application/x-www-form-urlencoded');
+
+    return this.http
+      .get<RequestResult<TypeDocument>>(`${this.configService?.config?.urlApi}Users/GetTypesDocuments`,
+        { headers: headers }
+      )
+      .pipe(
+        retry(0),
+        catchError((error: HttpErrorResponse) => {
+          let errorMessage = '';
+          if (error.status === 401) {
+            errorMessage = 'Token expirado o no válido. Por favor, inicia sesión de nuevo.';
+
+            this.router.navigate(['/auth/login']);
+          } else {
+            errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+          }
+          this.sharedService.showLoader(false);
+          this.sharedService.error(errorMessage);
+          return throwError(() => new Error(errorMessage));
+        }),
+        map((response) => {
+          this.sharedService.showLoader(false);
+          return response;
+        })
+      );
+  }
+
+  
+  getPersonByNumberDocument(numberDocument: string): Observable<RequestResult<Persons>> {
+    this.sharedService.showLoader(true);
+
+    const headers = new HttpHeaders()
+    .set('Content-Type', 'application/x-www-form-urlencoded');
+
+    return this.http
+      .get<RequestResult<Persons>>(`${this.configService?.config?.urlApi}Persons/GetPersonByNumberDocument?numberDocument=${numberDocument}`,
+        { headers: headers }
+      )
+      .pipe(
+        retry(0),
+        catchError((error: HttpErrorResponse) => {
+          let errorMessage = '';
+          if (error.status === 401) {
+            errorMessage = 'Token expirado o no válido. Por favor, inicia sesión de nuevo.';
+
             this.router.navigate(['/auth/login']);
           } else {
             errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;

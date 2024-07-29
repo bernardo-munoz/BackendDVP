@@ -1,11 +1,10 @@
-<div class="row w-100 mx-0 auth-page">
+<div class="row w-100 mx-0 auth-page my-7">
   <div class="col-md-10 col-xl-8 mx-auto">
     <div class="card">
       <div class="row">
         <div class="col-md-6 pe-md-0">
-          <div class="auth-side-wrapper"
-            [ngStyle]="{
-              'background-image': 'url(assets/images/others/syspotec_logo.png)',
+          <div class="auth-side-wrapper" [ngStyle]="{
+              'background-image': 'url(assets/images/others/dvp_logo.png)',
               'background-size':'contain',
               'background-repeat': 'no-repeat',
               'background-position': 'center center' }">
@@ -13,61 +12,77 @@
         </div>
         <div class="col-md-6 ps-md-0">
           <div class="auth-form-wrapper px-4 py-5">
-            <a routerLink="." class="nobleui-logo d-block mb-2">SYSPOTEC S.A.S</a>
+            <a routerLink="." class="nobleui-logo d-block mb-2">DVP</a>
             <h5 class="text-muted fw-normal mb-4">Bienvenido! Por favor, ingresa tus datos.</h5>
             <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
               <div class="mb-3">
+
+                <div class="mb-3">
+                  <label for="name" class="form-label">Nombres</label>
+                  <input type="text" class="form-control" formControlName="name" id="name" placeholder="Nombres">
+                  <div *ngIf="f.name.touched && f.name.invalid" class="text-danger">
+                    <div *ngIf="f.name.errors?.required">El nombre es requerido.</div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="lastname" class="form-label">Apellidos</label>
+                  <input type="text" class="form-control" formControlName="lastname" id="lastname"
+                    placeholder="Apellidos">
+                  <div *ngIf="f.lastname.touched && f.lastname.invalid" class="text-danger">
+                    <div *ngIf="f.lastname.errors?.required">El apellido es requerido.</div>
+                  </div>
+                </div>
+
                 <label for="document" class="form-label">Numero Documento</label>
-                <input type="text" class="form-control" formControlName="document" id="document" autocomplete="document" placeholder="0000000">
+                <input type="text" class="form-control" formControlName="document" id="document" autocomplete="document"
+                  placeholder="N° Documento">
                 <div *ngIf="f.document.touched && f.document.invalid" class="text-danger">
                   <div *ngIf="f.document.errors?.required">El número de documento es requerido.</div>
                 </div>
               </div>
+
               <div class="mb-3">
-                <label for="name" class="form-label">Nombres</label>
-                <input type="text" class="form-control" formControlName="name" id="name" placeholder="Nombres">
-                <div *ngIf="f.name.touched && f.name.invalid" class="text-danger">
-                  <div *ngIf="f.name.errors?.required">El nombre es requerido.</div>
+                <label for="typeDocument" class="form-label">Tipo identificación </label>
+                <ng-select [items]="listTypesDocuments" bindLabel="type" bindValue="id"
+                  placeholder="Selecciona un tipo de identificación" name="typeDocument" formControlName="typeDocument"
+                  [clearable]="true"></ng-select>
+                <div *ngIf="f.typeDocument.touched && f.typeDocument.invalid" class="text-danger">
+                  <div *ngIf="f.typeDocument.errors?.required">El Tipo de identificación es requerido.</div>
                 </div>
               </div>
+
               <div class="mb-3">
-                <label for="lastname" class="form-label">Apellidos</label>
-                <input type="text" class="form-control" formControlName="lastname" id="lastname" placeholder="Apellidos">
-                <div *ngIf="f.lastname.touched && f.lastname.invalid" class="text-danger">
-                  <div *ngIf="f.lastname.errors?.required">El apellido es requerido.</div>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="address" class="form-label">Dirección</label>
-                <input type="text" class="form-control" formControlName="address" id="address" placeholder="Dirección">
-              </div>
-              <div class="mb-3">
-                <label for="email" class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" formControlName="email" id="email" placeholder="Correo electrónico">
+                <label for="email" class="form-label">Correo electronico</label>
+                <input type="text" class="form-control" formControlName="email" id="email" placeholder="Email">
                 <div *ngIf="f.email.touched && f.email.invalid" class="text-danger">
-                  <div *ngIf="f.email.errors?.required">El correo electrónico es requerido.</div>
-                  <div *ngIf="f.email.errors?.email">El correo electrónico no es válido.</div>
+                  <div *ngIf="f.email.errors?.required">El email es requerido.</div>
                 </div>
               </div>
+
               <div class="mb-3">
-                <label for="phone" class="form-label">Celular</label>
-                <input type="tel" class="form-control" formControlName="phone" id="phone" placeholder="Celular">
-                <div *ngIf="f.phone.touched && f.phone.invalid" class="text-danger">
-                  <div *ngIf="f.phone.errors?.pattern">El celular debe contener 10 dígitos numéricos.</div>
+                <label for="user" class="form-label">Nombre de usuario</label>
+                <input type="text" class="form-control" formControlName="user" id="user" placeholder="usuario">
+                <div *ngIf="f.user.touched && f.user.invalid" class="text-danger">
+                  <div *ngIf="f.user.errors?.required">El usuario es requerido.</div>
                 </div>
               </div>
+
               <div class="mb-3">
                 <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" formControlName="password" id="password" autocomplete="current-password" placeholder="Contraseña">
+                <input type="password" class="form-control" formControlName="password" id="password"
+                  autocomplete="current-password" placeholder="Contraseña">
                 <div *ngIf="f.password.touched && f.password.invalid" class="text-danger">
                   <div *ngIf="f.password.errors?.required">La contraseña es requerida.</div>
                   <div *ngIf="f.password.errors?.minlength">La contraseña debe tener al menos 6 caracteres.</div>
                 </div>
               </div>
+
               <div class="form-check mb-3">
-                <input type="checkbox" class="form-check-input" formControlName="authCheck" id="authCheck" checked="true">
+                <input type="checkbox" class="form-check-input" formControlName="authCheck" id="authCheck"
+                  checked="true">
                 <label class="form-check-label" for="authCheck">
-                  Al registrarme autorizo el uso de mis datos personales según la política de <a href="#">tratamiento de datos.</a>
+                  Al registrarme autorizo el uso de mis datos personales según la política de <a href="#">tratamiento de
+                    datos.</a>
                 </label>
                 <div *ngIf="f.authCheck.touched && !f.authCheck.value " class="text-danger">
                   <div>Debe autorizar el uso de sus datos personales.</div>

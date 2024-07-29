@@ -20,24 +20,24 @@
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>Documento</th>
                           <th>Nombres</th>
                           <th>Apellidos</th>
-                          <th>Rol</th>
-                          <th>Estado</th>
+                          <th>Documento</th>
+                          <th>Tipo Documento</th>
+                          <th>Correo</th>
                           <th>Ver/Editar</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let user of users let i = index">
                           <td>{{ i + 1 }}</td>
-                          <td>{{ user.document }}</td>
                           <td>{{ user.name }}</td>
                           <td>{{ user.lastname }}</td>
-                          <td>{{ user.rol }}</td>
-                          <td>{{ user.state }}</td>
+                          <td>{{ user.numberDocument }}</td>
+                          <td>{{ user.typeDocument }}</td>
+                          <td>{{ user.email }}</td>
                           <td>
-                            <i style="cursor: pointer;" class="fa fa-eye" [attr.data-user-id]="user.userID"></i>
+                            <i style="cursor: pointer;" class="fa fa-eye" [attr.data-user-id]="user.numberDocument"></i>
                           </td>
                         </tr>
                       </tbody>

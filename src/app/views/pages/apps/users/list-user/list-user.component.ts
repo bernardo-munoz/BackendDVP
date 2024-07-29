@@ -7,7 +7,7 @@ import * as XLSX from 'xlsx';
 import 'datatables.net-buttons/js/dataTables.buttons';
 import 'datatables.net-buttons/js/buttons.html5';
 import { SharedService } from 'services/shared.service';
-import { RequestResultObject } from '../../../auth/model/auth';
+import { Persons, RequestResultObject } from '../../../auth/model/auth';
 
 @Component({
   selector: 'app-list-user',
@@ -16,7 +16,7 @@ import { RequestResultObject } from '../../../auth/model/auth';
 })
 export class ListUserComponent implements OnInit {
   @Input() refresh: boolean = false;
-  users:Users[] = [];
+  users:Persons[] = [];
   dataTable: DataTable;
 
   constructor(
@@ -62,7 +62,7 @@ export class ListUserComponent implements OnInit {
   }
 
   getListUsers(){
-    this.userService.getListUsers().subscribe((data: RequestResultObject<Users>) => {
+    this.userService.getListUsers().subscribe((data: RequestResultObject<Persons>) => {
 
       if (data.success) {
         this.users = data.result;

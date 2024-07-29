@@ -39,15 +39,16 @@ export class UsersComponent implements OnInit {
   constructor(
     private userService: UserService,
     private toastr: ToastrService
-  ) { this.getRoles();
+  ) { 
+    //this.getRoles();
 
-    this.userService.getUserSelectedEdit().subscribe((documento: string | null) => {
+    /* this.userService.getUserSelectedEdit().subscribe((documento: string | null) => {
 
       if(documento){
         this.getUser(documento);
       }
 
-    });
+    }); */
   }
 
   ngOnInit(): void {

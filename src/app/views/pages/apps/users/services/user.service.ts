@@ -7,7 +7,7 @@ import { RequestResultPHP } from 'src/app/models/request-result';
 import { Roles, Users, Modulos, Permisos, MenuRol } from '../model/user';
 import { SESSION_TOKEN } from 'src/app/models/consts';
 import { Router } from '@angular/router';
-import { RequestResult, RequestResultObject } from '../../../auth/model/auth';
+import { Persons, RequestResult, RequestResultObject } from '../../../auth/model/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -216,7 +216,7 @@ export class UserService {
     .set('Authorization',`Bearer ${token}`);
 
     return this.http
-      .get<RequestResultObject<Users>>(`${this.configService?.config?.urlApi}Users/GetAllUsers`,
+      .get<RequestResultObject<Persons>>(`${this.configService?.config?.urlApi}Persons/GetAllPersons`,
         { headers: headers }
       )
       .pipe(
