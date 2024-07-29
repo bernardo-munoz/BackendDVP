@@ -6,7 +6,7 @@
 
 ## Descripción del Proyecto
 
-El propósito de este proyecto es desarrollar una aplicación de gestión de clientes que permita a los administradores de DVP gestionar crear un registro de persona donde aparte de los datos personales solicita un user name y passwor.
+El propósito de este proyecto es desarrollar una aplicación de registro de usuarios que permita el inicio de sesión, crear registros de persona donde aparte de los datos personales solicita un user name y passwor con el cual puedes ingresar al sistema y visualizar las personas registradas.
 
 ### Características
 
@@ -27,7 +27,7 @@ Para ejecutar este proyecto en tu máquina local, sigue los siguientes pasos:
 ### Instalación
 
 1. **Clona el repositorio**:
-
+https://github.com/bernardo-munoz/BackendDVP.git
 
 2. **Instala las dependencias**:
 
