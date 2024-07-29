@@ -27,7 +27,7 @@ Para ejecutar este proyecto en tu máquina local, sigue los siguientes pasos:
 ### Instalación
 
 1. **Clona el repositorio**:
-https://github.com/bernardo-munoz/BackendDVP.git
+https://github.com/bernardo-munoz/FrontendDVP.git
 
 2. **Instala las dependencias**:
 
